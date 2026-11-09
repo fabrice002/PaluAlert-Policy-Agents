@@ -1,0 +1,211 @@
+{
+  "CM-LAW-2024-017": {
+    "status": "ok",
+    "pages": 24,
+    "chars": 48364,
+    "chunks": 51,
+    "ocr_pages": 23,
+    "articles_tagged": 41
+  },
+  "CM-LAW-2010-012": {
+    "status": "ok",
+    "pages": 26,
+    "chars": 69878,
+    "chunks": 69,
+    "ocr_pages": 0,
+    "articles_tagged": 55
+  },
+  "CM-COE-OCTOPUS-2021": {
+    "status": "ok",
+    "pages": 30,
+    "chars": 83426,
+    "chunks": 86,
+    "ocr_pages": 0,
+    "articles_tagged": 69
+  },
+  "CM-PSNLP-2024-2028": {
+    "status": "ok",
+    "pages": 142,
+    "chars": 377986,
+    "chunks": 379,
+    "ocr_pages": 1,
+    "articles_tagged": 0
+  },
+  "CM-PSNLP-2019-2023": {
+    "status": "ok",
+    "pages": 117,
+    "chars": 265335,
+    "chunks": 262,
+    "ocr_pages": 1,
+    "articles_tagged": 0
+  },
+  "CM-PSNSN-2020-2024": {
+    "status": "not_fetched"
+  },
+  "CM-PSNSN-2026-2030": {
+    "status": "ok",
+    "pages": 83,
+    "chars": 167473,
+    "chunks": 160,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "CM-PNLP-2023-REVIEW": {
+    "status": "ok",
+    "pages": 25,
+    "chars": 8519,
+    "chunks": 9,
+    "ocr_pages": 2,
+    "articles_tagged": 0
+  },
+  "AU-MALABO-2014": {
+    "status": "ok",
+    "pages": 37,
+    "chars": 75480,
+    "chunks": 79,
+    "ocr_pages": 37,
+    "articles_tagged": 33
+  },
+  "AU-AI-STRATEGY-2024": {
+    "status": "ok",
+    "pages": 66,
+    "chars": 162942,
+    "chunks": 151,
+    "ocr_pages": 1,
+    "articles_tagged": 0
+  },
+  "SMART-AFRICA-AI-2021": {
+    "status": "ok",
+    "pages": 68,
+    "chars": 129915,
+    "chunks": 128,
+    "ocr_pages": 4,
+    "articles_tagged": 0
+  },
+  "KE-AI-STRATEGY-2025": {
+    "status": "unreadable",
+    "detail": "PDF has no readable pages"
+  },
+  "RW-AI-POLICY-2023": {
+    "status": "ok",
+    "pages": 22,
+    "chars": 31646,
+    "chunks": 31,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "EU-AI-ACT-SUMMARY": {
+    "status": "ok",
+    "pages": 1,
+    "chars": 2530,
+    "chunks": 3,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "AE-DOH-AI-POLICY-2018": {
+    "status": "not_fetched"
+  },
+  "AE-PDPL-2021": {
+    "status": "not_fetched"
+  },
+  "WHO-AI-ETHICS-2021": {
+    "status": "ok",
+    "pages": 165,
+    "chars": 489540,
+    "chunks": 463,
+    "ocr_pages": 0,
+    "articles_tagged": 4
+  },
+  "WHO-AI-REG-2023": {
+    "status": "not_fetched"
+  },
+  "WHO-GTS-MALARIA-2021": {
+    "status": "not_fetched"
+  },
+  "WHO-MALARIA-SURV-2018": {
+    "status": "not_fetched"
+  },
+  "WHO-IHR-2005": {
+    "status": "not_fetched"
+  },
+  "ITU-Y3172-2019": {
+    "status": "ok",
+    "pages": 34,
+    "chars": 72511,
+    "chunks": 69,
+    "ocr_pages": 3,
+    "articles_tagged": 0
+  },
+  "ITU-AIREADY-2025": {
+    "status": "ok",
+    "pages": 55,
+    "chars": 124807,
+    "chunks": 117,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "UN-GOVERNING-AI-2024": {
+    "status": "ok",
+    "pages": 101,
+    "chars": 295479,
+    "chunks": 295,
+    "ocr_pages": 3,
+    "articles_tagged": 0
+  },
+  "EV-RESULTS-SUMMARY": {
+    "status": "ok",
+    "pages": 15,
+    "chars": 20253,
+    "chunks": 19,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "EV-SENSOR-VALIDATION": {
+    "status": "ok",
+    "pages": 12,
+    "chars": 5541,
+    "chunks": 6,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "EV-NATIONAL-VALIDATION": {
+    "status": "ok",
+    "pages": 11,
+    "chars": 6703,
+    "chunks": 7,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "EV-INCREMENTAL": {
+    "status": "ok",
+    "pages": 8,
+    "chars": 5018,
+    "chunks": 6,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "EV-IOT-ACQUISITION": {
+    "status": "ok",
+    "pages": 8,
+    "chars": 5536,
+    "chunks": 6,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "EV-IOT-HARDWARE": {
+    "status": "ok",
+    "pages": 33,
+    "chars": 17535,
+    "chunks": 18,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  },
+  "EV-MLOPS-PLATFORM": {
+    "status": "ok",
+    "pages": 18,
+    "chars": 7222,
+    "chunks": 7,
+    "ocr_pages": 0,
+    "articles_tagged": 0
+  }
+}

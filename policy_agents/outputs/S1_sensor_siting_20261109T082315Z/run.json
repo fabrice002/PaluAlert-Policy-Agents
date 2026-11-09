@@ -1,0 +1,1932 @@
+{
+  "run_id": "S1_sensor_siting_20261109T082315Z",
+  "scenario": {
+    "id": "S1_sensor_siting",
+    "title": "S1 · A badly sited IoT sensor quietly lowers the malaria forecast",
+    "domain": "healthcare × IoT × telecom × data protection",
+    "summary": "Built from a real finding of the thesis (sensor_validation): the first deployed LoRa/Meshtastic node in Yaoundé reads +7.27 °C and -30.6 RH points against the ERA5 reanalysis the models were trained on, at an identical dew point. The element is sound; the siting is not. Fed raw, the sensor lowers the forecast. Nobody has the full picture: the surveillance unit sees the data, the telecom regulator sees the network, the ministry sees the field, and a regional delegation acts on the dashboard.\n",
+    "agents": [
+      "surveillance",
+      "ministry",
+      "dpa",
+      "telecom",
+      "advisor"
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "title": "First IoT capture disagrees with the reanalysis",
+        "release": [
+          {
+            "to": [
+              "surveillance"
+            ],
+            "event": {
+              "id": "E1.1",
+              "type": "iot_reading",
+              "text": "Node !a0cb4a5c (Biyem Assi health district, Yaoundé) reports for April 2026: temperature 30.73 °C, relative humidity 56.8 %, pressure 927.90 hPa. ERA5 for the same hours: 23.46 °C, 87.4 %, 923.63 hPa.\n",
+              "signals": [
+                "sensor_bias"
+              ],
+              "data": {
+                "node": "!a0cb4a5c",
+                "bias_temperature_c": 7.27,
+                "bias_rh_points": -30.6,
+                "dew_point_sensor_c": 21.02,
+                "dew_point_era5_c": 21.06
+              },
+              "tool": {
+                "name": "compare_inputs",
+                "args": {
+                  "district": "Biyem Assi",
+                  "year": 2026,
+                  "month": 4,
+                  "precipitation_mm": 180.0,
+                  "offset_c": 7.27,
+                  "variants": {
+                    "reanalysis": {
+                      "temperature_c": 23.46,
+                      "humidity_pct": 87.4,
+                      "pressure_hpa": 923.63
+                    },
+                    "sensor_raw": {
+                      "temperature_c": 30.73,
+                      "humidity_pct": 56.8,
+                      "pressure_hpa": 927.9
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "to": [
+              "telecom"
+            ],
+            "event": {
+              "id": "E1.2",
+              "type": "network_operations",
+              "text": "Gateway logs: node !a0cb4a5c changed position on 28 March and now relays through a new rooftop repeater; 12 % packet loss on the 868 MHz link.\n",
+              "signals": [
+                "new_radio_node"
+              ]
+            }
+          },
+          {
+            "to": [
+              "ministry"
+            ],
+            "event": {
+              "id": "E1.3",
+              "type": "field_report",
+              "text": "Biyem Assi district health team: RDT positivity this April is similar to last April; ACT stocks are adequate.\n",
+              "signals": []
+            }
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "title": "The dashboard says \"Low\" and a region wants to scale down",
+        "release": [
+          {
+            "to": [
+              "ministry"
+            ],
+            "event": {
+              "id": "E2.1",
+              "type": "operational_request",
+              "text": "The Centre regional delegation proposes to postpone the indoor residual spraying round in Biyem Assi because the PaluAlert dashboard has shown \"Low\" for three weeks.\n",
+              "signals": [
+                "campaign_downscale_request",
+                "low_risk_output"
+              ]
+            }
+          },
+          {
+            "to": [
+              "surveillance"
+            ],
+            "event": {
+              "id": "E2.2",
+              "type": "monitoring_alert",
+              "text": "Drift monitor: PSI above 9 on Temperature_C and Humidity_pct for the IoT-fed district against the training reference (major drift).\n",
+              "signals": [
+                "drift_major"
+              ]
+            }
+          }
+        ],
+        "human": {
+          "MAINTAIN_VECTOR_CONTROL": {
+            "decision": "approve",
+            "note": "Keep the spraying round as planned; the Low output comes from a feed under investigation."
+          }
+        }
+      },
+      {
+        "step": 3,
+        "title": "Root cause found, and a fix that creates a new problem",
+        "release": [
+          {
+            "to": "all",
+            "event": {
+              "id": "E3.1",
+              "type": "field_finding",
+              "text": "Field visit: the node is mounted on a sun-exposed metal roof. The vendor proposes to move it to a host household's yard and to store raw readings together with the household's GPS position and phone number for maintenance visits.\n",
+              "signals": [
+                "sensor_relocation_household",
+                "new_radio_node"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "actions": [
+        "QUARANTINE_SENSOR_FEED",
+        "APPLY_SENSOR_CORRECTION",
+        "FLAG_PREDICTIONS_UNRELIABLE",
+        "FIELD_VERIFICATION",
+        "MAINTAIN_VECTOR_CONTROL",
+        "HOLD_ALERT_PENDING_VERIFICATION",
+        "SPECTRUM_COMPLIANCE_CHECK",
+        "SECURE_IOT_CHANNEL",
+        "MINIMISE_LOCATION_DATA",
+        "REQUIRE_DPIA"
+      ],
+      "gaps": [
+        "G-SENSOR-STANDARD",
+        "G-ALERT-AUTHORITY",
+        "G-IOT-SECURITY",
+        "G-MODEL-VALIDATION"
+      ]
+    }
+  },
+  "llm": {
+    "backend": "extractive",
+    "model": ""
+  },
+  "mews": "in-process",
+  "steps": [
+    {
+      "step": 1,
+      "title": "First IoT capture disagrees with the reanalysis",
+      "released": [
+        {
+          "event": "E1.1",
+          "to": [
+            "surveillance"
+          ],
+          "type": "iot_reading",
+          "text": "Node !a0cb4a5c (Biyem Assi health district, Yaoundé) reports for April 2026: temperature 30.73 °C, relative humidity 56.8 %, pressure 927.90 hPa. ERA5 for the same hours: 23.46 °C, 87.4 %, 923.63 hPa.\n",
+          "signals": [
+            "sensor_bias"
+          ]
+        },
+        {
+          "event": "E1.2",
+          "to": [
+            "telecom"
+          ],
+          "type": "network_operations",
+          "text": "Gateway logs: node !a0cb4a5c changed position on 28 March and now relays through a new rooftop repeater; 12 % packet loss on the 868 MHz link.\n",
+          "signals": [
+            "new_radio_node"
+          ]
+        },
+        {
+          "event": "E1.3",
+          "to": [
+            "ministry"
+          ],
+          "type": "field_report",
+          "text": "Biyem Assi district health team: RDT positivity this April is similar to last April; ACT stocks are adequate.\n",
+          "signals": []
+        }
+      ],
+      "assessments": {
+        "surveillance": {
+          "agent": "surveillance",
+          "step": 1,
+          "known_events": [
+            "E1.1"
+          ],
+          "new_events": [
+            "E1.1"
+          ],
+          "signals": [
+            "low_risk_output",
+            "prediction_sensitive_to_sensor",
+            "sensor_bias"
+          ],
+          "summary": "Surveillance & Model Operations agent: 1 new event(s); signals low_risk_output, prediction_sensitive_to_sensor, sensor_bias; proposes QUARANTINE_SENSOR_FEED, APPLY_SENSOR_CORRECTION, FLAG_PREDICTIONS_UNRELIABLE, CERTIFY_SENSOR_SITING.",
+          "tool_results": [
+            {
+              "tool": "compare_inputs",
+              "event": "E1.1",
+              "mews": "in-process",
+              "district": "Biyem Assi",
+              "period": "2026-04",
+              "rows": [
+                {
+                  "variant": "reanalysis",
+                  "temperature_c": 23.46,
+                  "humidity_pct": 87.4,
+                  "pressure_hpa": 923.63,
+                  "predicted_cases": 3835,
+                  "incidence_per_1000": 9.35,
+                  "risk_level": "Low",
+                  "threshold": 14.28,
+                  "prediction_id": 1,
+                  "vs_reference_pct": 0.0
+                },
+                {
+                  "variant": "sensor_raw",
+                  "temperature_c": 30.73,
+                  "humidity_pct": 56.8,
+                  "pressure_hpa": 927.9,
+                  "predicted_cases": 3509,
+                  "incidence_per_1000": 8.55,
+                  "risk_level": "Low",
+                  "threshold": 14.28,
+                  "prediction_id": 2,
+                  "vs_reference_pct": -8.5
+                },
+                {
+                  "variant": "sensor_corrected",
+                  "temperature_c": 23.46,
+                  "humidity_pct": 87.0,
+                  "pressure_hpa": 927.9,
+                  "predicted_cases": 3837,
+                  "incidence_per_1000": 9.35,
+                  "risk_level": "Low",
+                  "threshold": 14.28,
+                  "prediction_id": 3,
+                  "vs_reference_pct": 0.1
+                }
+              ],
+              "derived_signals": [
+                "prediction_sensitive_to_sensor",
+                "low_risk_output"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "question": "sensor sited badly temperature offset dew point costs forecast",
+              "chunk_id": "EV-SENSOR-VALIDATION#c0000",
+              "citation": "EV-SENSOR-VALIDATION (ENSPY thesis (this project), 2026), § sensor_validation",
+              "score": 0.2256
+            },
+            {
+              "question": "sensor sited badly temperature offset dew point costs forecast",
+              "chunk_id": "EV-SENSOR-VALIDATION#c0001",
+              "citation": "EV-SENSOR-VALIDATION (ENSPY thesis (this project), 2026), § Main result",
+              "score": 0.1808
+            },
+            {
+              "question": "provenance rule models trained exclusively on reanalysis no IoT measurement",
+              "chunk_id": "EV-IOT-ACQUISITION#c0001",
+              "citation": "EV-IOT-ACQUISITION (ENSPY thesis (this project), 2026), § Two projects, one chain",
+              "score": 0.1852
+            },
+            {
+              "question": "provenance rule models trained exclusively on reanalysis no IoT measurement",
+              "chunk_id": "EV-IOT-ACQUISITION#c0002",
+              "citation": "EV-IOT-ACQUISITION (ENSPY thesis (this project), 2026), § The provenance rule",
+              "score": 0.0769
+            },
+            {
+              "question": "offset-corrected sensor reanalysis no retraining",
+              "chunk_id": "EV-SENSOR-VALIDATION#c0001",
+              "citation": "EV-SENSOR-VALIDATION (ENSPY thesis (this project), 2026), § Main result",
+              "score": 0.212
+            },
+            {
+              "question": "offset-corrected sensor reanalysis no retraining",
+              "chunk_id": "EV-SENSOR-VALIDATION#c0000",
+              "citation": "EV-SENSOR-VALIDATION (ENSPY thesis (this project), 2026), § sensor_validation",
+              "score": 0.0648
+            }
+          ],
+          "claims": [
+            {
+              "text": "[surveillance] on: sensor sited badly temperature offset dew point costs forecast",
+              "quote": "Meshtastic node !a0cb4a5c. ## Running it Needs network: it fetches the matching reanalysis hours from Open-Meteo. ## Main result The sensor is sound, but it is sited badly, and that one fault costs 38 % of. the forecast.",
+              "chunk_id": "EV-SENSOR-VALIDATION#c0000",
+              "citation": "EV-SENSOR-VALIDATION (ENSPY thesis (this project), 2026), § sensor_validation",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.2256
+            },
+            {
+              "text": "[surveillance] on: sensor sited badly temperature offset dew point costs forecast",
+              "quote": "Subtracting the offset and recomputing humidity at the sensor's own dew point. brings it back to within 1.3 % of the reanalysis.",
+              "chunk_id": "EV-SENSOR-VALIDATION#c0001",
+              "citation": "EV-SENSOR-VALIDATION (ENSPY thesis (this project), 2026), § Main result",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1808
+            },
+            {
+              "text": "[surveillance] on: provenance rule models trained exclusively on reanalysis no IoT measurement",
+              "quote": "See the next section. ## The provenance rule The models in ../palualert_app/deployment_bundle/ were trained and validated exclusively on historical.",
+              "chunk_id": "EV-IOT-ACQUISITION#c0001",
+              "citation": "EV-IOT-ACQUISITION (ENSPY thesis (this project), 2026), § Two projects, one chain",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1852
+            },
+            {
+              "text": "[surveillance] on: provenance rule models trained exclusively on reanalysis no IoT measurement",
+              "quote": "The one place IoT data is used is sensor_validation/,. and there it answers a *hardware* question: does the deployed sensor agree with. the reanalysis the models were trained on?, not a modelling one.",
+              "chunk_id": "EV-IOT-ACQUISITION#c0002",
+              "citation": "EV-IOT-ACQUISITION (ENSPY thesis (this project), 2026), § The provenance rule",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.0769
+            },
+            {
+              "text": "[surveillance] on: offset-corrected sensor reanalysis no retraining",
+              "quote": "Relative humidity predicted from. a +7.27 degC offset at unchanged moisture is 57.0 %; the sensor reads.",
+              "chunk_id": "EV-SENSOR-VALIDATION#c0000",
+              "citation": "EV-SENSOR-VALIDATION (ENSPY thesis (this project), 2026), § sensor_validation",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.0648
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "QUARANTINE_SENSOR_FEED",
+              "label": "Quarantine the affected IoT feed; fall back to reanalysis",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "The node disagrees with the reanalysis the models were trained on; the validation study traced this to a siting offset that changes the forecast.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "surveillance",
+              "step": 1
+            },
+            {
+              "code": "APPLY_SENSOR_CORRECTION",
+              "label": "Apply the documented siting-offset correction and flag outputs as corrected",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "The node disagrees with the reanalysis the models were trained on; the validation study traced this to a siting offset that changes the forecast.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "surveillance",
+              "step": 1
+            },
+            {
+              "code": "FLAG_PREDICTIONS_UNRELIABLE",
+              "label": "Flag affected predictions as outside the validity envelope",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "The node disagrees with the reanalysis the models were trained on; the validation study traced this to a siting offset that changes the forecast.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "surveillance",
+              "step": 1
+            },
+            {
+              "code": "CERTIFY_SENSOR_SITING",
+              "label": "Certify the siting and calibration of environmental sensors",
+              "owner": null,
+              "high_impact": false,
+              "rationale": "The node disagrees with the reanalysis the models were trained on; the validation study traced this to a siting offset that changes the forecast.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "surveillance",
+              "step": 1
+            }
+          ],
+          "requests": [
+            {
+              "from": "surveillance",
+              "to": "telecom",
+              "question": "Was the LoRa node relocated or reconfigured, and is it operating within its authorised radio parameters?",
+              "step": 1
+            }
+          ],
+          "probes": [
+            "G-SENSOR-STANDARD"
+          ],
+          "trace": [
+            "Known events up to step 1: E1.1",
+            "New this step: E1.1 (iot_reading)",
+            "Signals: low_risk_output, prediction_sensitive_to_sensor, sensor_bias",
+            "Rule 'sensor_bias' matched -> actions ['QUARANTINE_SENSOR_FEED', 'APPLY_SENSOR_CORRECTION', 'FLAG_PREDICTIONS_UNRELIABLE', 'CERTIFY_SENSOR_SITING'], consult ['telecom']",
+            "Rule 'prediction_sensitive_to_sensor' matched -> actions ['FLAG_PREDICTIONS_UNRELIABLE']",
+            "Retrieved 2 chunk(s) for: sensor sited badly temperature offset dew point costs forecast",
+            "Retrieved 2 chunk(s) for: provenance rule models trained exclusively on reanalysis no IoT measurement",
+            "Retrieved 2 chunk(s) for: offset-corrected sensor reanalysis no retraining",
+            "Evidence gate: 5 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "ministry": {
+          "agent": "ministry",
+          "step": 1,
+          "known_events": [
+            "E1.3"
+          ],
+          "new_events": [
+            "E1.3"
+          ],
+          "signals": [],
+          "summary": "Ministry of Public Health / PNLP agent: 1 new event(s); signals none; proposes no action.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 1: E1.3",
+            "New this step: E1.3 (field_report)",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "dpa": {
+          "agent": "dpa",
+          "step": 1,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Data Protection Authority agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 1: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "telecom": {
+          "agent": "telecom",
+          "step": 1,
+          "known_events": [
+            "E1.2"
+          ],
+          "new_events": [
+            "E1.2"
+          ],
+          "signals": [
+            "new_radio_node"
+          ],
+          "summary": "Telecom regulator & cybersecurity agent: 1 new event(s); signals new_radio_node; proposes SPECTRUM_COMPLIANCE_CHECK, SECURE_IOT_CHANNEL.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "security of electronic communication networks and information systems audit",
+              "chunk_id": "CM-LAW-2010-012#c0015",
+              "citation": "CM-LAW-2010-012 (Présidence de la République du Cameroun, 2010), p. 7–8",
+              "score": 0.2375
+            },
+            {
+              "question": "security of electronic communication networks and information systems audit",
+              "chunk_id": "CM-LAW-2010-012#c0014",
+              "citation": "CM-LAW-2010-012 (Présidence de la République du Cameroun, 2010), art. 7, p. 7",
+              "score": 0.2292
+            },
+            {
+              "question": "MQTT broker gateway encryption channel",
+              "chunk_id": "EV-IOT-HARDWARE#c0003",
+              "citation": "EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Sensor node: Heltec V3",
+              "score": 0.115
+            },
+            {
+              "question": "MQTT broker gateway encryption channel",
+              "chunk_id": "EV-IOT-HARDWARE#c0009",
+              "citation": "EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Why these values, briefly",
+              "score": 0.1127
+            }
+          ],
+          "claims": [
+            {
+              "text": "[telecom] on: security of electronic communication networks and information systems audit",
+              "quote": "8 - monitor technological developments and issue warnings and recommendations regarding the security of electronic communication networks and certification ; - participate in research, training and studies related to the security of electronic communication networks, certification and information systems; - ensure the regularity and efficiency of security",
+              "chunk_id": "CM-LAW-2010-012#c0015",
+              "citation": "CM-LAW-2010-012 (Présidence de la République du Cameroun, 2010), p. 7–8",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.2375
+            },
+            {
+              "text": "[telecom] on: security of electronic communication networks and information systems audit",
+              "quote": "(2) The Agency referred to in subsection 1 above shall be responsible for the regulation , control and monitoring of activities related to the security of electronic communication networks, information systems, and electronic certification on behalf of the State.",
+              "chunk_id": "CM-LAW-2010-012#c0014",
+              "citation": "CM-LAW-2010-012 (Présidence de la République du Cameroun, 2010), art. 7, p. 7",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.2292
+            },
+            {
+              "text": "[telecom] on: MQTT broker gateway encryption channel",
+              "quote": "It gathers. telemetry from the mesh over LoRa and republishes it to the MQTT broker over.",
+              "chunk_id": "EV-IOT-HARDWARE#c0003",
+              "citation": "EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Sensor node: Heltec V3",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.115
+            },
+            {
+              "text": "[telecom] on: MQTT broker gateway encryption channel",
+              "quote": "Each step up in SF roughly doubles time on air and therefore. halves the number of nodes a channel supports.",
+              "chunk_id": "EV-IOT-HARDWARE#c0009",
+              "citation": "EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Why these values, briefly",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1127
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "SPECTRUM_COMPLIANCE_CHECK",
+              "label": "Verify radio band, power and duty cycle of the LoRa nodes",
+              "owner": "telecom",
+              "high_impact": false,
+              "rationale": "New nodes join a network that carries public-health data.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "telecom",
+              "step": 1
+            },
+            {
+              "code": "SECURE_IOT_CHANNEL",
+              "label": "Require authentication and encryption on the sensor-to-broker channel",
+              "owner": "telecom",
+              "high_impact": false,
+              "rationale": "New nodes join a network that carries public-health data.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "telecom",
+              "step": 1
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-IOT-SECURITY"
+          ],
+          "trace": [
+            "Known events up to step 1: E1.2",
+            "New this step: E1.2 (network_operations)",
+            "Signals: new_radio_node",
+            "Rule 'new_radio_node' matched -> actions ['SPECTRUM_COMPLIANCE_CHECK', 'SECURE_IOT_CHANNEL']",
+            "Retrieved 2 chunk(s) for: security of electronic communication networks and information systems audit",
+            "Retrieved 2 chunk(s) for: MQTT broker gateway encryption channel",
+            "Evidence gate: 4 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "advisor": {
+          "agent": "advisor",
+          "step": 1,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Policy & legal adviser agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 1: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        }
+      },
+      "messages": [
+        {
+          "request": {
+            "from": "surveillance",
+            "to": "telecom",
+            "question": "Was the LoRa node relocated or reconfigured, and is it operating within its authorised radio parameters?",
+            "step": 1
+          },
+          "reply": {
+            "from": "telecom",
+            "to": "surveillance",
+            "question": "Was the LoRa node relocated or reconfigured, and is it operating within its authorised radio parameters?",
+            "answer": "Current position (step 1): SPECTRUM_COMPLIANCE_CHECK, SECURE_IOT_CHANNEL. New nodes join a network that carries public-health data. Under EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Rainfall travels in the `iaq` field: “In the April 2026 capture the iaq column is empty on all 3 139 rows, so. the rain channel was not reporting during that deployment window regardless. ## 4 · Radio parameters Every node in a Meshtastic network must share identical radio parameters: frequency, spreading factor, coding rate, bandwidth: or they cannot hear each. other at all.”",
+            "claims": [
+              {
+                "text": "[telecom] answer to surveillance: Was the LoRa node relocated or reconfigured, and is it operating within its authorised radio parameters?",
+                "quote": "In the April 2026 capture the iaq column is empty on all 3 139 rows, so. the rain channel was not reporting during that deployment window regardless. ## 4 · Radio parameters Every node in a Meshtastic network must share identical radio parameters: frequency, spreading factor, coding rate, bandwidth: or they cannot hear each. other at all.",
+                "chunk_id": "EV-IOT-HARDWARE#c0007",
+                "citation": "EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Rainfall travels in the `iaq` field",
+                "verified": true,
+                "reason": "verbatim match",
+                "source_scope": "evidence",
+                "score": 0.1015
+              }
+            ],
+            "step": 1,
+            "found": true,
+            "position": "Current position (step 1): SPECTRUM_COMPLIANCE_CHECK, SECURE_IOT_CHANNEL. New nodes join a network that carries public-health data. "
+          }
+        }
+      ],
+      "coordination": {
+        "proposals": {
+          "QUARANTINE_SENSOR_FEED": [
+            "surveillance"
+          ],
+          "APPLY_SENSOR_CORRECTION": [
+            "surveillance"
+          ],
+          "FLAG_PREDICTIONS_UNRELIABLE": [
+            "surveillance"
+          ],
+          "CERTIFY_SENSOR_SITING": [
+            "surveillance"
+          ],
+          "SPECTRUM_COMPLIANCE_CHECK": [
+            "telecom"
+          ],
+          "SECURE_IOT_CHANNEL": [
+            "telecom"
+          ]
+        },
+        "conflicts": [],
+        "ownership": [
+          {
+            "action": "CERTIFY_SENSOR_SITING",
+            "issue": "no institution is mandated",
+            "proposed_by": [
+              "surveillance"
+            ]
+          }
+        ],
+        "decisions": []
+      }
+    },
+    {
+      "step": 2,
+      "title": "The dashboard says \"Low\" and a region wants to scale down",
+      "released": [
+        {
+          "event": "E2.1",
+          "to": [
+            "ministry"
+          ],
+          "type": "operational_request",
+          "text": "The Centre regional delegation proposes to postpone the indoor residual spraying round in Biyem Assi because the PaluAlert dashboard has shown \"Low\" for three weeks.\n",
+          "signals": [
+            "campaign_downscale_request",
+            "low_risk_output"
+          ]
+        },
+        {
+          "event": "E2.2",
+          "to": [
+            "surveillance"
+          ],
+          "type": "monitoring_alert",
+          "text": "Drift monitor: PSI above 9 on Temperature_C and Humidity_pct for the IoT-fed district against the training reference (major drift).\n",
+          "signals": [
+            "drift_major"
+          ]
+        }
+      ],
+      "assessments": {
+        "surveillance": {
+          "agent": "surveillance",
+          "step": 2,
+          "known_events": [
+            "E1.1",
+            "E2.2"
+          ],
+          "new_events": [
+            "E2.2"
+          ],
+          "signals": [
+            "drift_major"
+          ],
+          "summary": "Surveillance & Model Operations agent: 1 new event(s); signals drift_major; proposes FLAG_PREDICTIONS_UNRELIABLE.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "drift detection PSI Kolmogorov-Smirnov monitoring",
+              "chunk_id": "EV-MLOPS-PLATFORM#c0001",
+              "citation": "EV-MLOPS-PLATFORM (ENSPY thesis (this project), 2026), § The actual data flow",
+              "score": 0.1713
+            },
+            {
+              "question": "drift detection PSI Kolmogorov-Smirnov monitoring",
+              "chunk_id": "EV-INCREMENTAL#c0002",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § The four lessons",
+              "score": 0.1384
+            }
+          ],
+          "claims": [
+            {
+              "text": "[surveillance] on: drift detection PSI Kolmogorov-Smirnov monitoring",
+              "quote": "Drift Detection, PSI + Kolmogorov-Smirnov (data), Mann-Whitney (performance), ✅.",
+              "chunk_id": "EV-MLOPS-PLATFORM#c0001",
+              "citation": "EV-MLOPS-PLATFORM (ENSPY thesis (this project), 2026), § The actual data flow",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1713
+            },
+            {
+              "text": "[surveillance] on: drift detection PSI Kolmogorov-Smirnov monitoring",
+              "quote": "Improving the regression. does not improve risk detection: which is nonetheless the whole point of an. early-warning system. ## Drift detection on the spliced series A second part, with no claim to performance: the A+B series is knowingly. distorted, and what is checked is that the detector in. palualert_app/app/mlops/monitoring/drift.py spots it.",
+              "chunk_id": "EV-INCREMENTAL#c0002",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § The four lessons",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1384
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "FLAG_PREDICTIONS_UNRELIABLE",
+              "label": "Flag affected predictions as outside the validity envelope",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "Input distribution has shifted beyond the PSI threshold.",
+              "claim_ids": [
+                0,
+                1
+              ],
+              "proposed_by": "surveillance",
+              "step": 2
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-MODEL-VALIDATION"
+          ],
+          "trace": [
+            "Known events up to step 2: E1.1, E2.2",
+            "New this step: E2.2 (monitoring_alert)",
+            "Signals: drift_major",
+            "Rule 'drift_major' matched -> actions ['FLAG_PREDICTIONS_UNRELIABLE']",
+            "Retrieved 2 chunk(s) for: drift detection PSI Kolmogorov-Smirnov monitoring",
+            "Evidence gate: 2 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "ministry": {
+          "agent": "ministry",
+          "step": 2,
+          "known_events": [
+            "E1.3",
+            "E2.1"
+          ],
+          "new_events": [
+            "E2.1"
+          ],
+          "signals": [
+            "campaign_downscale_request",
+            "low_risk_output"
+          ],
+          "summary": "Ministry of Public Health / PNLP agent: 1 new event(s); signals campaign_downscale_request, low_risk_output; proposes HOLD_ALERT_PENDING_VERIFICATION, FIELD_VERIFICATION, MAINTAIN_VECTOR_CONTROL.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "pulvérisation intradomiciliaire moustiquaires imprégnées campagne planification district",
+              "chunk_id": "CM-PSNLP-2019-2023#c0131",
+              "citation": "CM-PSNLP-2019-2023 (Ministère de la Santé Publique / PNLP, 2019), p. 61–62",
+              "score": 0.1341
+            },
+            {
+              "question": "pulvérisation intradomiciliaire moustiquaires imprégnées campagne planification district",
+              "chunk_id": "CM-PSNLP-2024-2028#c0121",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 50",
+              "score": 0.0721
+            },
+            {
+              "question": "surveillance épidémiologique riposte seuil épidémique district de santé",
+              "chunk_id": "CM-PSNLP-2024-2028#c0229",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 84",
+              "score": 0.1677
+            },
+            {
+              "question": "surveillance épidémiologique riposte seuil épidémique district de santé",
+              "chunk_id": "CM-PSNLP-2024-2028#c0366",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 137–138",
+              "score": 0.1495
+            },
+            {
+              "question": "complétude promptitude des rapports DHIS2 qualité des données",
+              "chunk_id": "CM-PSNLP-2024-2028#c0184",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 68",
+              "score": 0.1941
+            },
+            {
+              "question": "complétude promptitude des rapports DHIS2 qualité des données",
+              "chunk_id": "CM-PSNLP-2024-2028#c0144",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 55–56",
+              "score": 0.1599
+            }
+          ],
+          "claims": [
+            {
+              "text": "[ministry] on: pulvérisation intradomiciliaire moustiquaires imprégnées campagne planification district",
+              "quote": "D'ici 2023, Au moins 80% de la population à risque des districts de santé ciblés est protégée par la Pulvérisation Intra- Domiciliaire (PID) Stratégie 3.5.1:",
+              "chunk_id": "CM-PSNLP-2019-2023#c0131",
+              "citation": "CM-PSNLP-2019-2023 (Ministère de la Santé Publique / PNLP, 2019), p. 61–62",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1341
+            },
+            {
+              "text": "[ministry] on: pulvérisation intradomiciliaire moustiquaires imprégnées campagne planification district",
+              "quote": "Entre 2019 et 2022, deux campagnes de distribution des Moustiquaires Imprégnées d’insecticides à Longue Durée d’Action (MILDA) ont été organisées.",
+              "chunk_id": "CM-PSNLP-2024-2028#c0121",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 50",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.0721
+            },
+            {
+              "text": "[ministry] on: surveillance épidémiologique riposte seuil épidémique district de santé",
+              "quote": "Surveillance épidémiologique du paludisme La surveillance épidémiologique du paludisme sera mise en œuvre à travers les interventions de surveillance épidémiologique en routine, surveillance sentinelle, préparation à la riposte aux épidémies, surveillance entomologique et gestion de la résistance aux insecticides.",
+              "chunk_id": "CM-PSNLP-2024-2028#c0229",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 84",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1677
+            },
+            {
+              "text": "[ministry] on: surveillance épidémiologique riposte seuil épidémique district de santé",
+              "quote": "Mécanisme de coordination du M&E 6.3.1 Composante « Surveillance épidémiologique » (SNIS/SIMR) Sous le leadership de la DLMEP, le Ministère de la Santé Publique organise une collecte hebdomadaire des données de morbidité et de mortalité relatives aux maladies à potentiel épidémique, y compris le paludisme.",
+              "chunk_id": "CM-PSNLP-2024-2028#c0366",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 137–138",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1495
+            },
+            {
+              "text": "[ministry] on: complétude promptitude des rapports DHIS2 qualité des données",
+              "quote": "La mise en œuvre régulière de la vérification sur site (FOSA) de la qualité des données, complémentaire à la tenue régulière des réunions de revue et de validation trimestrielle des données au niveau régional a amélioré la qualité des données rapportées en routine.",
+              "chunk_id": "CM-PSNLP-2024-2028#c0144",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 55–56",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1599
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "HOLD_ALERT_PENDING_VERIFICATION",
+              "label": "Hold any alert or de-escalation until field data confirm",
+              "owner": "ministry",
+              "high_impact": false,
+              "rationale": "Planned vector control follows the national strategic plan; a single model output is not a basis to scale it down without field confirmation.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "ministry",
+              "step": 2
+            },
+            {
+              "code": "FIELD_VERIFICATION",
+              "label": "Request field verification: RDT positivity, stock levels, DHIS2 completeness",
+              "owner": "ministry",
+              "high_impact": false,
+              "rationale": "Planned vector control follows the national strategic plan; a single model output is not a basis to scale it down without field confirmation.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "ministry",
+              "step": 2
+            },
+            {
+              "code": "MAINTAIN_VECTOR_CONTROL",
+              "label": "Keep the planned vector-control / bed-net activities unchanged",
+              "owner": "ministry",
+              "high_impact": true,
+              "rationale": "Planned vector control follows the national strategic plan; a single model output is not a basis to scale it down without field confirmation.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "ministry",
+              "step": 2
+            }
+          ],
+          "requests": [
+            {
+              "from": "ministry",
+              "to": "surveillance",
+              "question": "Is the Low-risk output shown for this district reliable enough to change a planned vector-control campaign?",
+              "step": 2
+            }
+          ],
+          "probes": [
+            "G-ALERT-AUTHORITY"
+          ],
+          "trace": [
+            "Known events up to step 2: E1.3, E2.1",
+            "New this step: E2.1 (operational_request)",
+            "Signals: campaign_downscale_request, low_risk_output",
+            "Rule 'campaign_downscale_request' matched -> actions ['HOLD_ALERT_PENDING_VERIFICATION', 'FIELD_VERIFICATION', 'MAINTAIN_VECTOR_CONTROL'], consult ['surveillance']",
+            "Rule 'low_risk_output' matched -> actions ['FIELD_VERIFICATION']",
+            "Retrieved 2 chunk(s) for: pulvérisation intradomiciliaire moustiquaires imprégnées campagne planification district",
+            "Retrieved 2 chunk(s) for: surveillance épidémiologique riposte seuil épidémique district de santé",
+            "Retrieved 2 chunk(s) for: complétude promptitude des rapports DHIS2 qualité des données",
+            "Evidence gate: 5 claim(s) admitted, 0 rejected",
+            "High-impact actions routed to human decision: MAINTAIN_VECTOR_CONTROL"
+          ],
+          "llm": null
+        },
+        "dpa": {
+          "agent": "dpa",
+          "step": 2,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Data Protection Authority agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 2: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "telecom": {
+          "agent": "telecom",
+          "step": 2,
+          "known_events": [
+            "E1.2"
+          ],
+          "new_events": [],
+          "signals": [],
+          "summary": "Telecom regulator & cybersecurity agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 2: E1.2",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "advisor": {
+          "agent": "advisor",
+          "step": 2,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Policy & legal adviser agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 2: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        }
+      },
+      "messages": [
+        {
+          "request": {
+            "from": "ministry",
+            "to": "surveillance",
+            "question": "Is the Low-risk output shown for this district reliable enough to change a planned vector-control campaign?",
+            "step": 2
+          },
+          "reply": {
+            "from": "surveillance",
+            "to": "ministry",
+            "question": "Is the Low-risk output shown for this district reliable enough to change a planned vector-control campaign?",
+            "answer": "Current position (step 2): FLAG_PREDICTIONS_UNRELIABLE. Input distribution has shifted beyond the PSI threshold. No provision on this point was found in the documents within my mandate; I flag it as a possible gap.",
+            "claims": [],
+            "step": 2,
+            "found": false,
+            "position": "Current position (step 2): FLAG_PREDICTIONS_UNRELIABLE. Input distribution has shifted beyond the PSI threshold. "
+          }
+        }
+      ],
+      "coordination": {
+        "proposals": {
+          "FLAG_PREDICTIONS_UNRELIABLE": [
+            "surveillance"
+          ],
+          "HOLD_ALERT_PENDING_VERIFICATION": [
+            "ministry"
+          ],
+          "FIELD_VERIFICATION": [
+            "ministry"
+          ],
+          "MAINTAIN_VECTOR_CONTROL": [
+            "ministry"
+          ]
+        },
+        "conflicts": [],
+        "ownership": [],
+        "decisions": [
+          {
+            "step": 2,
+            "action": "MAINTAIN_VECTOR_CONTROL",
+            "label": "Keep the planned vector-control / bed-net activities unchanged",
+            "proposed_by": [
+              "ministry"
+            ],
+            "decision": "approve",
+            "note": "Keep the spraying round as planned; the Low output comes from a feed under investigation.",
+            "by": "human (scripted exercise director)"
+          }
+        ]
+      }
+    },
+    {
+      "step": 3,
+      "title": "Root cause found, and a fix that creates a new problem",
+      "released": [
+        {
+          "event": "E3.1",
+          "to": [
+            "surveillance",
+            "ministry",
+            "dpa",
+            "telecom",
+            "advisor"
+          ],
+          "type": "field_finding",
+          "text": "Field visit: the node is mounted on a sun-exposed metal roof. The vendor proposes to move it to a host household's yard and to store raw readings together with the household's GPS position and phone number for maintenance visits.\n",
+          "signals": [
+            "sensor_relocation_household",
+            "new_radio_node"
+          ]
+        }
+      ],
+      "assessments": {
+        "surveillance": {
+          "agent": "surveillance",
+          "step": 3,
+          "known_events": [
+            "E1.1",
+            "E2.2",
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "new_radio_node",
+            "sensor_relocation_household"
+          ],
+          "summary": "Surveillance & Model Operations agent: 1 new event(s); signals new_radio_node, sensor_relocation_household; proposes no action.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 3: E1.1, E2.2, E3.1",
+            "New this step: E3.1 (field_finding)",
+            "Signals: new_radio_node, sensor_relocation_household",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "ministry": {
+          "agent": "ministry",
+          "step": 3,
+          "known_events": [
+            "E1.3",
+            "E2.1",
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "new_radio_node",
+            "sensor_relocation_household"
+          ],
+          "summary": "Ministry of Public Health / PNLP agent: 1 new event(s); signals new_radio_node, sensor_relocation_household; proposes no action.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 3: E1.3, E2.1, E3.1",
+            "New this step: E3.1 (field_finding)",
+            "Signals: new_radio_node, sensor_relocation_household",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "dpa": {
+          "agent": "dpa",
+          "step": 3,
+          "known_events": [
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "new_radio_node",
+            "sensor_relocation_household"
+          ],
+          "summary": "Data Protection Authority agent: 1 new event(s); signals new_radio_node, sensor_relocation_household; proposes MINIMISE_LOCATION_DATA, REQUIRE_DPIA.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "données à caractère personnel localisation personne physique identifiable",
+              "chunk_id": "CM-LAW-2024-017#c0005",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), p. 4",
+              "score": 0.1953
+            },
+            {
+              "question": "données à caractère personnel localisation personne physique identifiable",
+              "chunk_id": "CM-LAW-2024-017#c0012",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 10, 11, 12, p. 7",
+              "score": 0.1824
+            },
+            {
+              "question": "minimisation finalité déterminée explicite et légitime",
+              "chunk_id": "CM-LAW-2024-017#c0006",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), p. 4",
+              "score": 0.0761
+            }
+          ],
+          "claims": [
+            {
+              "text": "[dpa] on: données à caractère personnel localisation personne physique identifiable",
+              "quote": "Destinataire : toute personne physique ou morale, habilitée à recevoir une communication des données à caractère personnel.",
+              "chunk_id": "CM-LAW-2024-017#c0005",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), p. 4",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1953
+            },
+            {
+              "text": "[dpa] on: données à caractère personnel localisation personne physique identifiable",
+              "quote": "(2) La période de conservation des données à caractère personnel visée à l'alinéa",
+              "chunk_id": "CM-LAW-2024-017#c0012",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 10, 11, 12, p. 7",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1824
+            },
+            {
+              "text": "[dpa] on: minimisation finalité déterminée explicite et légitime",
+              "quote": "Interconnexion des fichiers : mécanisme de connexion consistant en la mise en relation de données à caractère personnel traitées pour une finalité déterminée avec d’autres données traitées, pour des finalités identiques ou non, ou liées par un ou plusieurs responsables de traitement. nes10Hi DE TUE Reetre ETARIAT GEN NTAIRE KOICE DU FICHIER LEGISLATIF E",
+              "chunk_id": "CM-LAW-2024-017#c0006",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), p. 4",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.0761
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "MINIMISE_LOCATION_DATA",
+              "label": "Do not store household-level location of sensor hosts",
+              "owner": "dpa",
+              "high_impact": false,
+              "rationale": "Storing the GPS position of the household hosting a node is personal data that the forecast does not need.",
+              "claim_ids": [
+                0,
+                1,
+                2
+              ],
+              "proposed_by": "dpa",
+              "step": 3
+            },
+            {
+              "code": "REQUIRE_DPIA",
+              "label": "Require a data-protection impact assessment before processing",
+              "owner": "dpa",
+              "high_impact": false,
+              "rationale": "Storing the GPS position of the household hosting a node is personal data that the forecast does not need.",
+              "claim_ids": [
+                0,
+                1,
+                2
+              ],
+              "proposed_by": "dpa",
+              "step": 3
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-DATA-SHARING"
+          ],
+          "trace": [
+            "Known events up to step 3: E3.1",
+            "New this step: E3.1 (field_finding)",
+            "Signals: new_radio_node, sensor_relocation_household",
+            "Rule 'sensor_relocation_household' matched -> actions ['MINIMISE_LOCATION_DATA', 'REQUIRE_DPIA']",
+            "Retrieved 2 chunk(s) for: données à caractère personnel localisation personne physique identifiable",
+            "Retrieved 1 chunk(s) for: minimisation finalité déterminée explicite et légitime",
+            "Evidence gate: 3 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "telecom": {
+          "agent": "telecom",
+          "step": 3,
+          "known_events": [
+            "E1.2",
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "new_radio_node",
+            "sensor_relocation_household"
+          ],
+          "summary": "Telecom regulator & cybersecurity agent: 1 new event(s); signals new_radio_node, sensor_relocation_household; proposes SPECTRUM_COMPLIANCE_CHECK, SECURE_IOT_CHANNEL.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "security of electronic communication networks and information systems audit",
+              "chunk_id": "CM-LAW-2010-012#c0015",
+              "citation": "CM-LAW-2010-012 (Présidence de la République du Cameroun, 2010), p. 7–8",
+              "score": 0.2375
+            },
+            {
+              "question": "security of electronic communication networks and information systems audit",
+              "chunk_id": "CM-LAW-2010-012#c0014",
+              "citation": "CM-LAW-2010-012 (Présidence de la République du Cameroun, 2010), art. 7, p. 7",
+              "score": 0.2292
+            },
+            {
+              "question": "MQTT broker gateway encryption channel",
+              "chunk_id": "EV-IOT-HARDWARE#c0003",
+              "citation": "EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Sensor node: Heltec V3",
+              "score": 0.115
+            },
+            {
+              "question": "MQTT broker gateway encryption channel",
+              "chunk_id": "EV-IOT-HARDWARE#c0009",
+              "citation": "EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Why these values, briefly",
+              "score": 0.1127
+            },
+            {
+              "question": "electronic communication operators shall preserve traffic data",
+              "chunk_id": "CM-COE-OCTOPUS-2021#c0051",
+              "citation": "CM-COE-OCTOPUS-2021 (Council of Europe, 2021), art. 20, 25, p. 19",
+              "score": 0.2061
+            },
+            {
+              "question": "electronic communication operators shall preserve traffic data",
+              "chunk_id": "CM-LAW-2010-012#c0023",
+              "citation": "CM-LAW-2010-012 (Présidence de la République du Cameroun, 2010), art. 24, 25, p. 11",
+              "score": 0.204
+            }
+          ],
+          "claims": [
+            {
+              "text": "[telecom] on: security of electronic communication networks and information systems audit",
+              "quote": "8 - monitor technological developments and issue warnings and recommendations regarding the security of electronic communication networks and certification ; - participate in research, training and studies related to the security of electronic communication networks, certification and information systems; - ensure the regularity and efficiency of security",
+              "chunk_id": "CM-LAW-2010-012#c0015",
+              "citation": "CM-LAW-2010-012 (Présidence de la République du Cameroun, 2010), p. 7–8",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.2375
+            },
+            {
+              "text": "[telecom] on: security of electronic communication networks and information systems audit",
+              "quote": "(2) The Agency referred to in subsection 1 above shall be responsible for the regulation , control and monitoring of activities related to the security of electronic communication networks, information systems, and electronic certification on behalf of the State.",
+              "chunk_id": "CM-LAW-2010-012#c0014",
+              "citation": "CM-LAW-2010-012 (Présidence de la République du Cameroun, 2010), art. 7, p. 7",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.2292
+            },
+            {
+              "text": "[telecom] on: MQTT broker gateway encryption channel",
+              "quote": "It gathers. telemetry from the mesh over LoRa and republishes it to the MQTT broker over.",
+              "chunk_id": "EV-IOT-HARDWARE#c0003",
+              "citation": "EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Sensor node: Heltec V3",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.115
+            },
+            {
+              "text": "[telecom] on: MQTT broker gateway encryption channel",
+              "quote": "Each step up in SF roughly doubles time on air and therefore. halves the number of nodes a channel supports.",
+              "chunk_id": "EV-IOT-HARDWARE#c0009",
+              "citation": "EV-IOT-HARDWARE (ENSPY thesis (this project), 2026), § Why these values, briefly",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1127
+            },
+            {
+              "text": "[telecom] on: electronic communication operators shall preserve traffic data",
+              "quote": "(2) Network operators and electronic communication service providers shall set up mechanisms for monitoring the traffic data of their networks.",
+              "chunk_id": "CM-COE-OCTOPUS-2021#c0051",
+              "citation": "CM-COE-OCTOPUS-2021 (Council of Europe, 2021), art. 20, 25, p. 19",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.2061
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "SPECTRUM_COMPLIANCE_CHECK",
+              "label": "Verify radio band, power and duty cycle of the LoRa nodes",
+              "owner": "telecom",
+              "high_impact": false,
+              "rationale": "New nodes join a network that carries public-health data.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "telecom",
+              "step": 3
+            },
+            {
+              "code": "SECURE_IOT_CHANNEL",
+              "label": "Require authentication and encryption on the sensor-to-broker channel",
+              "owner": "telecom",
+              "high_impact": false,
+              "rationale": "New nodes join a network that carries public-health data.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "telecom",
+              "step": 3
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-IOT-SECURITY"
+          ],
+          "trace": [
+            "Known events up to step 3: E1.2, E3.1",
+            "New this step: E3.1 (field_finding)",
+            "Signals: new_radio_node, sensor_relocation_household",
+            "Rule 'new_radio_node' matched -> actions ['SPECTRUM_COMPLIANCE_CHECK', 'SECURE_IOT_CHANNEL']",
+            "Rule 'sensor_relocation_household' matched -> actions ['SECURE_IOT_CHANNEL']",
+            "Retrieved 2 chunk(s) for: security of electronic communication networks and information systems audit",
+            "Retrieved 2 chunk(s) for: MQTT broker gateway encryption channel",
+            "Retrieved 2 chunk(s) for: electronic communication operators shall preserve traffic data",
+            "Evidence gate: 5 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "advisor": {
+          "agent": "advisor",
+          "step": 3,
+          "known_events": [
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "new_radio_node",
+            "sensor_relocation_household"
+          ],
+          "summary": "Policy & legal adviser agent: 1 new event(s); signals new_radio_node, sensor_relocation_household; proposes LOG_POLICY_GAP.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "digital infrastructure connectivity energy for AI",
+              "chunk_id": "ITU-AIREADY-2025#c0071",
+              "citation": "ITU-AIREADY-2025 (ITU, 2025), p. 34–35",
+              "score": 0.1163
+            },
+            {
+              "question": "digital infrastructure connectivity energy for AI",
+              "chunk_id": "ITU-AIREADY-2025#c0072",
+              "citation": "ITU-AIREADY-2025 (ITU, 2025), p. 35–36",
+              "score": 0.1082
+            }
+          ],
+          "claims": [
+            {
+              "text": "[advisor] on: digital infrastructure connectivity energy for AI",
+              "quote": "This dimension measures the availability of digital infrastructure, including devices, computing capability, connectivity, and energy.",
+              "chunk_id": "ITU-AIREADY-2025#c0071",
+              "citation": "ITU-AIREADY-2025 (ITU, 2025), p. 34–35",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "standard",
+              "score": 0.1163
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "LOG_POLICY_GAP",
+              "label": "Log a policy, standards or responsibility gap with global examples",
+              "owner": "advisor",
+              "high_impact": false,
+              "rationale": "Log a policy, standards or responsibility gap with global examples",
+              "claim_ids": [
+                0
+              ],
+              "proposed_by": "advisor",
+              "step": 3
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-IOT-SECURITY"
+          ],
+          "trace": [
+            "Known events up to step 3: E3.1",
+            "New this step: E3.1 (field_finding)",
+            "Signals: new_radio_node, sensor_relocation_household",
+            "Rule 'new_radio_node' matched -> actions ['LOG_POLICY_GAP']",
+            "Retrieved 2 chunk(s) for: digital infrastructure connectivity energy for AI",
+            "Evidence gate: 1 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        }
+      },
+      "messages": [],
+      "coordination": {
+        "proposals": {
+          "MINIMISE_LOCATION_DATA": [
+            "dpa"
+          ],
+          "REQUIRE_DPIA": [
+            "dpa"
+          ],
+          "SPECTRUM_COMPLIANCE_CHECK": [
+            "telecom"
+          ],
+          "SECURE_IOT_CHANNEL": [
+            "telecom"
+          ],
+          "LOG_POLICY_GAP": [
+            "advisor"
+          ]
+        },
+        "conflicts": [],
+        "ownership": [],
+        "decisions": []
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "step": 2,
+      "action": "MAINTAIN_VECTOR_CONTROL",
+      "label": "Keep the planned vector-control / bed-net activities unchanged",
+      "proposed_by": [
+        "ministry"
+      ],
+      "decision": "approve",
+      "note": "Keep the spraying round as planned; the Low output comes from a feed under investigation.",
+      "by": "human (scripted exercise director)"
+    }
+  ],
+  "gaps": [
+    {
+      "probe_id": "G-ALERT-AUTHORITY",
+      "category": "responsibility",
+      "category_label": "Unclear responsibility",
+      "title": "No designated authority to act on model-generated (predicted) epidemic alerts",
+      "status": "absent",
+      "national_best_score": 0.0526,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "Closest national text for: No designated authority to act on model-generated (predicted) epidemic alerts",
+          "quote": "L’équipe cadre assure la responsabilité d’offrir les services de soins de base selon les dispositions du document de stratégie de Renforcement du Système de Santé (SRSS).",
+          "chunk_id": "CM-PSNLP-2024-2028#c0304",
+          "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 106",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0526,
+          "overlap": 0.22
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No designated authority to act on model-generated (predicted) epidemic alerts",
+          "quote": "KEY ETHICAL PRINCIPLES FOR USE OF ARTIFICIAL INTELLIGENCE FOR HEALTH ETHICS AND GOVERNANCE OF ARTIFICIAL INTELLIGENCE FOR HEALTH 29 5.5 Ensure inclusiveness and equity Inclusiveness requires that AI used in health care is designed to encourage the widest possible appropriate,",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0113",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 44–45",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0884
+        }
+      ],
+      "recommendation": "Designate in regulation which body may act on a model-generated alert, at which confidence, and how the decision and its evidence are recorded.",
+      "y3172": [
+        "P",
+        "D",
+        "SINK"
+      ],
+      "readiness": [
+        "D7 Strategy Alignment",
+        "D10 AI & Policies"
+      ],
+      "triggered_by": [
+        {
+          "agent": "ministry",
+          "step": 2,
+          "why": "campaign_downscale_request,low_risk_output"
+        }
+      ],
+      "national_overlap": 0.22,
+      "missing_sources": [
+        "WHO-MALARIA-SURV-2018",
+        "AE-DOH-AI-POLICY-2018"
+      ]
+    },
+    {
+      "probe_id": "G-MODEL-VALIDATION",
+      "category": "standards",
+      "category_label": "Standards gap",
+      "title": "No standard for validating and monitoring a model before and after deployment",
+      "status": "absent",
+      "national_best_score": 0.1375,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "Closest national text for: No standard for validating and monitoring a model before and after deployment",
+          "quote": "DAJC, DRFP, DEPMINSANTE 15 000 000 15 000 000 Budget de l'État/ Appui des PTF Organisation d'un atelier de validation du modèle de fonctionnement et de projets d'actes de création du Centre National de Télémédecine SG, CI.",
+          "chunk_id": "CM-PSNSN-2026-2030#c0058",
+          "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 30",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.1375,
+          "overlap": 0.22
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No standard for validating and monitoring a model before and after deployment",
+          "quote": "deployment. Local innovation involves large amounts of data and research efforts. The contextualization will facilitate the deployment of AI integration. Chapter 3 22 AI Ready – Analysis Towards a Standardized Readiness Framework Dimension Metrics Contextualization & Regional Impact • Number/quality of regionally developed patents/technology compo nents/solutions. o Datasets, models, research, guidelines, toolsets, a",
+          "chunk_id": "ITU-AIREADY-2025#c0042",
+          "citation": "ITU-AIREADY-2025 (ITU, 2025), p. 23–24",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "standard",
+          "score": 0.0569
+        }
+      ],
+      "recommendation": "Require external validation, a declared validity envelope, local calibration before new-region use, and post-deployment drift monitoring.",
+      "y3172": [
+        "M",
+        "MLFO",
+        "SANDBOX"
+      ],
+      "readiness": [
+        "D4 Contextualization and Regional Impact",
+        "D5 Level of Integration of AI in Workflows",
+        "D10 AI & Policies"
+      ],
+      "triggered_by": [
+        {
+          "agent": "surveillance",
+          "step": 2,
+          "why": "drift_major"
+        }
+      ],
+      "national_overlap": 0.22,
+      "missing_sources": [
+        "WHO-AI-REG-2023"
+      ]
+    },
+    {
+      "probe_id": "G-SENSOR-STANDARD",
+      "category": "standards",
+      "category_label": "Standards gap",
+      "title": "No standard for siting and calibrating environmental sensors used for health decisions",
+      "status": "absent",
+      "national_best_score": 0.0439,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "Closest national text for: No standard for siting and calibrating environmental sensors used for health decisions",
+          "quote": "La norme nationale de couverture est d’un hôpital pour 150 000 habitants. o Formation Sanitaire de catégorie 3 :",
+          "chunk_id": "CM-PSNLP-2024-2028#c0063",
+          "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 27",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0439,
+          "overlap": 0.14
+        }
+      ],
+      "practice_examples": [],
+      "recommendation": "Reference a siting/calibration standard (e.g. national meteorological service practice) for any sensor feeding a health model, and certify nodes before use.",
+      "y3172": [
+        "SRC",
+        "PP"
+      ],
+      "readiness": [
+        "D13 Digital Infrastructure"
+      ],
+      "triggered_by": [
+        {
+          "agent": "surveillance",
+          "step": 1,
+          "why": "low_risk_output,prediction_sensitive_to_sensor,sensor_bias"
+        },
+        {
+          "agent": "coordinator",
+          "step": 1,
+          "why": "unowned CERTIFY_SENSOR_SITING"
+        }
+      ],
+      "national_overlap": 0.14,
+      "missing_sources": []
+    },
+    {
+      "probe_id": "G-IOT-SECURITY",
+      "category": "technology",
+      "category_label": "Technology / infrastructure gap",
+      "title": "Security baseline for low-cost IoT health-surveillance networks",
+      "status": "absent",
+      "national_best_score": 0.0946,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "Closest national text for: Security baseline for low-cost IoT health-surveillance networks",
+          "quote": "ANTIC 750 000 000 750 000 000 750 000 000 750 000 000 750 000 000 3 750 000 000 Budget de l'État/ Appui des PTF Acquisition des équipements numériques de santé prioritaires (objets connectés de santé) CI, DEPMINSANTE;",
+          "chunk_id": "CM-PSNSN-2026-2030#c0083",
+          "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 41",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0946,
+          "overlap": 0.25
+        }
+      ],
+      "practice_examples": [],
+      "recommendation": "Set a minimum security baseline (authentication, encryption, key management) for IoT nodes feeding public-health systems.",
+      "y3172": [
+        "SRC",
+        "C"
+      ],
+      "readiness": [
+        "D13 Digital Infrastructure"
+      ],
+      "triggered_by": [
+        {
+          "agent": "telecom",
+          "step": 1,
+          "why": "new_radio_node"
+        },
+        {
+          "agent": "telecom",
+          "step": 3,
+          "why": "new_radio_node,sensor_relocation_household"
+        },
+        {
+          "agent": "advisor",
+          "step": 3,
+          "why": "new_radio_node,sensor_relocation_household"
+        }
+      ],
+      "national_overlap": 0.25,
+      "missing_sources": []
+    },
+    {
+      "probe_id": "G-DATA-SHARING",
+      "category": "coordination",
+      "category_label": "Coordination problem",
+      "title": "No framework for routine data sharing between health, meteorology and telecom actors",
+      "status": "weak",
+      "national_best_score": 0.0798,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "National provision for: No framework for routine data sharing between health, meteorology and telecom actors",
+          "quote": "Suivant les dispositions du Décret N° 2013/093 du 04 avril 2013 portant organisation du Ministère de la santé Publique, la Cellule des Informations Sanitaires est chargée entre autres de la conception et du suivi de la mise en œuvre du Système d’Informations Sanitaires et de l’élaboration des indicateurs sanitaires nationaux.",
+          "chunk_id": "CM-PSNLP-2019-2023#c0062",
+          "citation": "CM-PSNLP-2019-2023 (Ministère de la Santé Publique / PNLP, 2019), p. 29",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0798,
+          "overlap": 0.45
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No framework for routine data sharing between health, meteorology and telecom actors",
+          "quote": "Accelerate the integration of AI in the core sectors outlined in the Digital Transformation Strategy, notably sectors with high social and economic value, including agriculture, education, health, climate change and natural resource management, and regional peace and security. iv.",
+          "chunk_id": "AU-AI-STRATEGY-2024#c0058",
+          "citation": "AU-AI-STRATEGY-2024 (African Union, 2024), p. 31–32",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "regional",
+          "score": 0.0674
+        },
+        {
+          "text": "Practice example for: No framework for routine data sharing between health, meteorology and telecom actors",
+          "quote": "In 2014, the US National Institutes of Health introduced their Genomic Data Sharing Policy, which is intended to encourage “broad and responsible sharing of genomic research data” (283).",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0296",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 104",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0522
+        }
+      ],
+      "recommendation": "Adopt data-sharing agreements between health, meteorology and network operators, with a common schema for climate-health data.",
+      "y3172": [
+        "SRC",
+        "C"
+      ],
+      "readiness": [
+        "D3 Cross-Domain Correlation Analysis",
+        "D7 Strategy Alignment"
+      ],
+      "triggered_by": [
+        {
+          "agent": "surveillance",
+          "step": 2,
+          "why": "unanswered consultation from ministry"
+        },
+        {
+          "agent": "dpa",
+          "step": 3,
+          "why": "new_radio_node,sensor_relocation_household"
+        }
+      ],
+      "national_overlap": 0.45,
+      "missing_sources": [
+        "CM-PSNSN-2020-2024"
+      ]
+    }
+  ],
+  "evaluation": {
+    "expected_actions_found": [
+      "APPLY_SENSOR_CORRECTION",
+      "FIELD_VERIFICATION",
+      "FLAG_PREDICTIONS_UNRELIABLE",
+      "HOLD_ALERT_PENDING_VERIFICATION",
+      "MAINTAIN_VECTOR_CONTROL",
+      "MINIMISE_LOCATION_DATA",
+      "QUARANTINE_SENSOR_FEED",
+      "REQUIRE_DPIA",
+      "SECURE_IOT_CHANNEL",
+      "SPECTRUM_COMPLIANCE_CHECK"
+    ],
+    "expected_actions_missed": [],
+    "action_recall": 1.0,
+    "expected_gaps_found": [
+      "G-ALERT-AUTHORITY",
+      "G-IOT-SECURITY",
+      "G-MODEL-VALIDATION",
+      "G-SENSOR-STANDARD"
+    ],
+    "expected_gaps_missed": [],
+    "gap_recall": 1.0,
+    "conflicts": 0,
+    "claims_admitted": 25,
+    "claims_rejected": 0,
+    "human_decisions": 1
+  }
+}

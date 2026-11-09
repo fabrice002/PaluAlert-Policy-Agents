@@ -1,0 +1,99 @@
+id: S1_sensor_siting
+title: "S1 · A badly sited IoT sensor quietly lowers the malaria forecast"
+domain: healthcare × IoT × telecom × data protection
+summary: >
+  Built from a real finding of the thesis (sensor_validation): the first
+  deployed LoRa/Meshtastic node in Yaoundé reads +7.27 °C and -30.6 RH points
+  against the ERA5 reanalysis the models were trained on, at an identical dew
+  point. The element is sound; the siting is not. Fed raw, the sensor lowers
+  the forecast. Nobody has the full picture: the surveillance unit sees the
+  data, the telecom regulator sees the network, the ministry sees the field,
+  and a regional delegation acts on the dashboard.
+agents: [surveillance, ministry, dpa, telecom, advisor]
+
+steps:
+  - step: 1
+    title: First IoT capture disagrees with the reanalysis
+    release:
+      - to: [surveillance]
+        event:
+          id: E1.1
+          type: iot_reading
+          text: >
+            Node !a0cb4a5c (Biyem Assi health district, Yaoundé) reports for April 2026:
+            temperature 30.73 °C, relative humidity 56.8 %, pressure 927.90 hPa.
+            ERA5 for the same hours: 23.46 °C, 87.4 %, 923.63 hPa.
+          signals: [sensor_bias]
+          data: {node: "!a0cb4a5c", bias_temperature_c: 7.27, bias_rh_points: -30.6,
+                 dew_point_sensor_c: 21.02, dew_point_era5_c: 21.06}
+          tool:
+            name: compare_inputs
+            args:
+              district: Biyem Assi
+              year: 2026
+              month: 4
+              precipitation_mm: 180.0      # illustrative monthly total, same for every variant
+              offset_c: 7.27
+              variants:
+                reanalysis: {temperature_c: 23.46, humidity_pct: 87.4, pressure_hpa: 923.63}
+                sensor_raw: {temperature_c: 30.73, humidity_pct: 56.8, pressure_hpa: 927.90}
+      - to: [telecom]
+        event:
+          id: E1.2
+          type: network_operations
+          text: >
+            Gateway logs: node !a0cb4a5c changed position on 28 March and now relays
+            through a new rooftop repeater; 12 % packet loss on the 868 MHz link.
+          signals: [new_radio_node]
+      - to: [ministry]
+        event:
+          id: E1.3
+          type: field_report
+          text: >
+            Biyem Assi district health team: RDT positivity this April is similar to last
+            April; ACT stocks are adequate.
+          signals: []
+
+  - step: 2
+    title: The dashboard says "Low" and a region wants to scale down
+    release:
+      - to: [ministry]
+        event:
+          id: E2.1
+          type: operational_request
+          text: >
+            The Centre regional delegation proposes to postpone the indoor residual
+            spraying round in Biyem Assi because the PaluAlert dashboard has shown "Low" for
+            three weeks.
+          signals: [campaign_downscale_request, low_risk_output]
+      - to: [surveillance]
+        event:
+          id: E2.2
+          type: monitoring_alert
+          text: >
+            Drift monitor: PSI above 9 on Temperature_C and Humidity_pct for the
+            IoT-fed district against the training reference (major drift).
+          signals: [drift_major]
+    human:
+      MAINTAIN_VECTOR_CONTROL:
+        decision: approve
+        note: Keep the spraying round as planned; the Low output comes from a feed under investigation.
+
+  - step: 3
+    title: Root cause found, and a fix that creates a new problem
+    release:
+      - to: all
+        event:
+          id: E3.1
+          type: field_finding
+          text: >
+            Field visit: the node is mounted on a sun-exposed metal roof. The vendor proposes
+            to move it to a host household's yard and to store raw readings together with
+            the household's GPS position and phone number for maintenance visits.
+          signals: [sensor_relocation_household, new_radio_node]
+
+expected:
+  actions: [QUARANTINE_SENSOR_FEED, APPLY_SENSOR_CORRECTION, FLAG_PREDICTIONS_UNRELIABLE,
+            FIELD_VERIFICATION, MAINTAIN_VECTOR_CONTROL, HOLD_ALERT_PENDING_VERIFICATION,
+            SPECTRUM_COMPLIANCE_CHECK, SECURE_IOT_CHANNEL, MINIMISE_LOCATION_DATA, REQUIRE_DPIA]
+  gaps: [G-SENSOR-STANDARD, G-ALERT-AUTHORITY, G-IOT-SECURITY, G-MODEL-VALIDATION]

@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+env/
+.venv/
+*.db
+
+# knowledge base: originals are re-fetched and hash-checked; derived files are rebuilt
+policy_agents/kb/raw/*
+!policy_agents/kb/raw/.gitkeep
+policy_agents/kb/processed/tfidf_index.pkl
+policy_agents/kb/processed/chroma_records.jsonl
+policy_agents/kb/processed/ocr_cache/
+policy_agents/kb/chromadb/

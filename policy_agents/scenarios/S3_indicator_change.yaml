@@ -1,0 +1,67 @@
+id: S3_indicator_change
+title: "S3 · A silent change of case definition looks like a drop in malaria"
+domain: healthcare × data governance × model lifecycle
+summary: >
+  Built from foumban_incremental: Foumban's 2019-2022 series (MAPE16_H_13)
+  and its 2023-2025 series (facility + community cases) differ by a factor of
+  1.31, across a 10-month reporting hole. Spliced, they teach the model a 23 %
+  drop that is a change of definition, not epidemiology. Meanwhile the frozen
+  model degrades every six months. Who may approve a new model version?
+agents: [surveillance, ministry, dpa, advisor]
+
+steps:
+  - step: 1
+    title: The model's error keeps growing
+    release:
+      - to: [surveillance]
+        event:
+          id: E1.1
+          type: monitoring_alert
+          text: >
+            Performance monitor, Foumban: the frozen model's MAE has risen over four
+            consecutive six-month windows (about +108 cases per window).
+          signals: [performance_drift]
+
+  - step: 2
+    title: The data changed, not the disease
+    release:
+      - to: [ministry]
+        event:
+          id: E2.1
+          type: data_notice
+          text: >
+            PNLP data manager: since January 2023 the reported indicator combines facility
+            and community confirmed cases; the 2019-2022 series used MAPE16_H_13.
+          signals: [indicator_definition_change]
+      - to: [surveillance]
+        event:
+          id: E2.2
+          type: data_check
+          text: >
+            Foumban source A / source B ratio = 1.31, with no data from March to December 2022.
+          signals: [indicator_definition_change]
+    human:
+      RETRAIN_OR_RECALIBRATE:
+        decision: approve
+        note: Recalibration (no hyperparameter to mis-tune) for a six-month trial; fine-tuning only after sandbox validation.
+
+  - step: 3
+    title: A model update is proposed
+    release:
+      - to: all
+        event:
+          id: E3.1
+          type: proposal
+          text: >
+            The PaluAlert team proposes to fine-tune the model on 2023-2025 data and put it into
+            production next month.
+          signals: [model_update_proposal]
+    human:
+      APPROVE_MODEL_UPDATE:
+        decision: defer
+        note: No body is mandated to approve model versions; referred to the ministry's digital health steering committee.
+
+expected:
+  actions: [FLAG_PREDICTIONS_UNRELIABLE, VERSION_INDICATOR_DEFINITION, RETRAIN_OR_RECALIBRATE,
+            FIELD_VERIFICATION, APPROVE_MODEL_UPDATE]
+  gaps: [G-INDICATOR-GOVERNANCE, G-MODEL-CHANGE, G-MODEL-VALIDATION]

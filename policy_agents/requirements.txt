@@ -1,0 +1,13 @@
+# Policy-agent layer (policy_agents). Verified with Python 3.12.10.
+PyMuPDF>=1.24          # PDF parsing + OCR hook (needs Tesseract + fra/eng tessdata for scans)
+scikit-learn>=1.5      # TF-IDF retrieval
+numpy>=1.26
+PyYAML>=6.0            # scenarios
+requests>=2.31         # source fetching
+httpx>=0.27            # palualert_app over HTTP, Ollama
+# palualert_app itself (in-process tool calls): see ../palualert_app/app/requirements.txt
+
+# Optional model backends
+# anthropic>=0.104     # AI4G_LLM_BACKEND=anthropic
+# openai>=1.40         # AI4G_LLM_BACKEND=openai (ITU sandbox / vLLM / any compatible endpoint)
+# chromadb>=0.5        # python -m palualert_agents.kb.to_chroma (ITU sandbox layout)

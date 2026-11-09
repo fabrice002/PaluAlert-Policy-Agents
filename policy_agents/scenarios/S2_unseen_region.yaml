@@ -1,0 +1,107 @@
+id: S2_unseen_region
+title: "S2 · Scaling the early-warning model to a region it has never been validated in"
+domain: healthcare × AI governance × data protection × cross-border health
+summary: >
+  The thesis validity envelope says the model ranks districts well nationally
+  (Spearman 0.859) but its absolute forecasts fail in unseen regions
+  (Leave-One-Region-Out R² -0.461) and unseen years (external R² -1.74). A
+  ministerial instruction to scale up, an offer of free fine-tuning on a foreign
+  cloud and a rumour from across the Nigerian border arrive at different
+  agents at different times.
+agents: [surveillance, ministry, dpa, telecom, advisor]
+
+steps:
+  - step: 1
+    title: Instruction to deploy nationwide
+    release:
+      - to: [ministry]
+        event:
+          id: E1.1
+          type: instruction
+          text: >
+            The Minister instructs that PaluAlert be used in all 10 regions, including
+            Extrême-Nord, from the 2027 rainy season.
+          signals: [nationwide_deployment_request]
+      - to: [surveillance]
+        event:
+          id: E1.2
+          type: tasking
+          text: >
+            Produce the June-August 2027 outlook for Mokolo (Extrême-Nord) with
+            climatological inputs, ahead of the national roll-out.
+          signals: [nationwide_deployment_request]
+          tool:
+            name: predict_series
+            args:
+              district: Mokolo
+              # illustrative climatology for a Sahelian highland district
+              readings:
+                - {year: 2027, month: 6, temperature_c: 26.5, humidity_pct: 66, pressure_hpa: 925, precipitation_mm: 120}
+                - {year: 2027, month: 7, temperature_c: 25.2, humidity_pct: 77, pressure_hpa: 926, precipitation_mm: 230}
+                - {year: 2027, month: 8, temperature_c: 24.8, humidity_pct: 81, pressure_hpa: 926, precipitation_mm: 270}
+      - to: [dpa]
+        event:
+          id: E1.3
+          type: plan
+          text: >
+            MINSANTE plans to use the model's district risk scores to prioritise bed-net
+            distribution and community health worker visits.
+          signals: [nationwide_deployment_request]
+    human:
+      DEPLOY_NATIONWIDE:
+        decision: reject
+        note: Operational use only where a local calibration period has been completed; ranking-only outputs elsewhere.
+
+  - step: 2
+    title: A free fine-tuning offer on a foreign cloud
+    release:
+      - to: [surveillance, dpa]
+        event:
+          id: E2.1
+          type: offer
+          text: >
+            A technology partner offers free fine-tuning on its cloud, hosted outside
+            Cameroon, using health-area level DHIS2 confirmed-case counts 2019-2025 for
+            Extrême-Nord.
+          signals: [foreign_cloud_training]
+    human:
+      BLOCK_TRANSFER:
+        decision: approve
+        note: No health-area data leave the country; district aggregates may be used in the ITU sandbox under a processing agreement.
+
+  - step: 3
+    title: A signal from across the border
+    release:
+      - to: [ministry, advisor]
+        event:
+          id: E3.1
+          type: rumour
+          text: >
+            Community radio reports a rise in fever cases on the Nigerian side of the
+            Mayo-Tsanaga valley. No laboratory confirmation yet.
+          signals: [cross_border_signal]
+      - to: [surveillance]
+        event:
+          id: E3.2
+          type: tasking
+          text: >
+            Rank Extrême-Nord border districts for July; Mokolo and Mozogo fall in the top
+            quartile of the model's ranking.
+          signals: [cross_border_signal]
+    human:
+      NOTIFY_WHO_IHR:
+        decision: defer
+        note: Assess with the IHR decision instrument once cases are confirmed; a model ranking is not a confirmed event.
+      INFORM_NEIGHBOUR_COUNTRY:
+        decision: approve
+        note: Share the district ranking and its limits with Nigerian counterparts through the existing cross-border malaria initiative.
+      ISSUE_PUBLIC_ALERT:
+        decision: defer
+        note: Wait for field verification.
+
+expected:
+  actions: [LOCAL_CALIBRATION_PERIOD, RANK_ONLY_OUTPUT, PUBLISH_TRANSPARENCY_NOTE,
+            DEPLOY_NATIONWIDE, REQUIRE_DPIA, PSEUDONYMISE_AGGREGATE, BLOCK_TRANSFER,
+            FIELD_VERIFICATION, NOTIFY_WHO_IHR, INFORM_NEIGHBOUR_COUNTRY]
+  gaps: [G-MODEL-VALIDATION, G-AI-HEALTH-REGULATION, G-HEALTH-DATA-TRANSFER,
+         G-AUTOMATED-DECISION, G-IHR-PREDICTED, G-TRANSPARENCY]

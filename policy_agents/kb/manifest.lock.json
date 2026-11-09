@@ -1,0 +1,222 @@
+{
+  "CM-LAW-2024-017": {
+    "status": "ok",
+    "file": "kb/raw/CM-LAW-2024-017.pdf",
+    "sha256": "3fd7aea48aa88c6987ce1a1801d27c9632d3e52e1d2c940e90312e12f85f74de",
+    "bytes": 4740177,
+    "final_url": "https://www.digitalbusiness.africa/wp-content/uploads/2024/12/1055fa3c2251b4c4248fd301f584daaf.pdf",
+    "fetched_at": "2026-11-04T05:04:46+00:00"
+  },
+  "CM-LAW-2010-012": {
+    "status": "ok",
+    "file": "kb/raw/CM-LAW-2010-012.pdf",
+    "sha256": "f2fa6ace2167abb86817818eaf7ed80c0fab3fba2a8a24cbef874bb749338ffe",
+    "bytes": 135785,
+    "final_url": "https://database.cyberpolicyportal.org/api/files/166367990584329pspck8evk.pdf",
+    "fetched_at": "2026-11-04T05:04:52+00:00"
+  },
+  "CM-COE-OCTOPUS-2021": {
+    "status": "ok",
+    "file": "kb/raw/CM-COE-OCTOPUS-2021.pdf",
+    "sha256": "48a31dc2d3ee6d0c8bf04f24d1543efbdc3f0220cf7176b84fd25dc7963cbb57",
+    "bytes": 368616,
+    "final_url": "https://rm.coe.int/octocom-legal-profile-cameroon/1680a5b36d",
+    "fetched_at": "2026-11-04T05:04:55+00:00"
+  },
+  "CM-PSNLP-2024-2028": {
+    "status": "ok",
+    "file": "kb/raw/CM-PSNLP-2024-2028.pdf",
+    "sha256": "a4a0f480fad1f2d4a92630ca83e561522a11bb47449ea4fdecbaa798e4c803df",
+    "bytes": 3980141,
+    "final_url": "https://mesamalaria.org/wp-content/uploads/2026/07/Plan-Strategique-National-de-Lutte-Contre-le-Paludisme-au-Cameroun-2024%E2%80%932028.pdf",
+    "fetched_at": "2026-11-04T05:04:59+00:00"
+  },
+  "CM-PSNLP-2019-2023": {
+    "status": "ok",
+    "file": "kb/raw/CM-PSNLP-2019-2023.pdf",
+    "sha256": "7f1bff50c5432ef2e4af9f181920aef78a056e528410cdea551ffac877998c3b",
+    "bytes": 2934797,
+    "final_url": "https://mesamalaria.org/wp-content/uploads/2026/07/Cameroun-Plan-Strategique-National-Paludisme_2019-2023.pdf",
+    "fetched_at": "2026-11-04T05:05:07+00:00"
+  },
+  "CM-PSNSN-2020-2024": {
+    "status": "error",
+    "detail": "ConnectionError: HTTPSConnectionPool(host='files.aho.afro.who.int', port=443): Max retries exceeded with url: /afahobckpcontainer/production/files/FR_DOCUMENT_PLAN_STRATEGIQUE_NATIONAL_DE_SANTE_NUMERIQUE_R%C3%A9duit_1.pdf (Caused by NameResolutionError(\"HTTPSConnection(host='files.aho.afro.who.int',",
+    "fetched_at": "2026-11-04T05:05:13+00:00"
+  },
+  "CM-PSNSN-2026-2030": {
+    "status": "ok",
+    "file": "kb/raw/CM-PSNSN-2026-2030.pdf",
+    "sha256": "9567cc9c288d69de78f8ac7f6774b079a5c4103e803ba7af483bff1d419faba5",
+    "bytes": 2527125,
+    "final_url": "https://www.minsante.cm/site/sites/default/files/S%26E_PSNSN%202026-2030_Fr.pdf",
+    "fetched_at": "2026-11-04T05:05:14+00:00"
+  },
+  "CM-PNLP-2023-REVIEW": {
+    "status": "ok",
+    "file": "kb/raw/CM-PNLP-2023-REVIEW.pdf",
+    "sha256": "5039e675d83186bbd92ba40d462c98e7eff2f29af6d14780fa3b557d949795d3",
+    "bytes": 1539680,
+    "final_url": "https://endmalaria.org/sites/default/files/CAMEROUN%20%20%20Presentation%20PNLP%202023-FR%20_revue_20_ok.pptx.pdf",
+    "fetched_at": "2026-11-04T05:05:18+00:00"
+  },
+  "AU-MALABO-2014": {
+    "status": "ok",
+    "file": "kb/raw/AU-MALABO-2014.pdf",
+    "sha256": "4564c7ee68658754590953f653b6aa43582d63fdd16f8614ecd0b4cf89c96485",
+    "bytes": 13794400,
+    "final_url": "https://au.int/sites/default/files/treaties/29560-treaty-0048_-_african_union_convention_on_cyber_security_and_personal_data_protection_e.pdf",
+    "fetched_at": "2026-11-04T05:05:23+00:00"
+  },
+  "AU-AI-STRATEGY-2024": {
+    "status": "ok",
+    "file": "kb/raw/AU-AI-STRATEGY-2024.pdf",
+    "sha256": "c5429f73786c0a0c170a78278016339ab86f914b239290ba1d6623cc07734e3f",
+    "bytes": 2572777,
+    "final_url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/server/knowledge/InputDocs/AI_Strategies/African_Union_Continental_AI_Strategy_2024.pdf",
+    "fetched_at": "2026-11-04T05:05:35+00:00"
+  },
+  "SMART-AFRICA-AI-2021": {
+    "status": "ok",
+    "file": "kb/raw/SMART-AFRICA-AI-2021.pdf",
+    "sha256": "f3938ff0148f33e0f9746e81926d9d599868869c5df7accf0fb16e912ccf6f52",
+    "bytes": 2857698,
+    "final_url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/server/knowledge/InputDocs/AI_Strategies/Smart_Africa_AI_Blueprint_2021.pdf",
+    "fetched_at": "2026-11-04T05:05:39+00:00"
+  },
+  "KE-AI-STRATEGY-2025": {
+    "status": "ok",
+    "file": "kb/raw/KE-AI-STRATEGY-2025.pdf",
+    "sha256": "abdd3bd3ad568f4907cb06702ae12a2b282502264375e8c026c7a13bef2fbed5",
+    "bytes": 6913786,
+    "final_url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/server/knowledge/InputDocs/AI_Strategies/Kenya_AI_Strategy_2025-2030.pdf",
+    "fetched_at": "2026-11-04T05:05:44+00:00"
+  },
+  "RW-AI-POLICY-2023": {
+    "status": "ok",
+    "file": "kb/raw/RW-AI-POLICY-2023.pdf",
+    "sha256": "47bbaf7969a5b76cd1d3076687052ea4fd9e04cdf44ebaab14bb1a47de6347ee",
+    "bytes": 1199823,
+    "final_url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/server/knowledge/InputDocs/AI_Strategies/Rwanda_National_AI_Policy_2023.pdf",
+    "fetched_at": "2026-11-04T05:05:51+00:00"
+  },
+  "EU-AI-ACT-SUMMARY": {
+    "status": "ok",
+    "file": "kb/raw/EU-AI-ACT-SUMMARY.txt",
+    "sha256": "74743ab14120577b82cba66b904838570c34cae857772cacd40ad12b99807289",
+    "bytes": 2531,
+    "final_url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/server/knowledge/InputDocs/AI_Strategies/EU_AI_Act_summary.txt",
+    "fetched_at": "2026-11-04T05:05:55+00:00"
+  },
+  "AE-DOH-AI-POLICY-2018": {
+    "status": "error",
+    "detail": "SSLError: HTTPSConnectionPool(host='www.doh.gov.ae', port=443): Max retries exceeded with url: /-/media/E9C1470A575146B18015DEBE57E47F8D.ashx (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:10",
+    "fetched_at": "2026-11-04T05:05:58+00:00"
+  },
+  "AE-PDPL-2021": {
+    "status": "error",
+    "detail": "HTTP 403",
+    "fetched_at": "2026-11-04T05:06:01+00:00"
+  },
+  "WHO-AI-ETHICS-2021": {
+    "status": "ok",
+    "file": "kb/raw/WHO-AI-ETHICS-2021.pdf",
+    "sha256": "dc5697ab8ba83b0ab42232da6e85f1dd41eb4fab9d112deaedfa97458a8cdfb1",
+    "bytes": 1969366,
+    "final_url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/server/knowledge/InputDocs/AI_Strategies/WHO%20Content%209789240029200.pdf",
+    "fetched_at": "2026-11-04T05:06:05+00:00"
+  },
+  "WHO-AI-REG-2023": {
+    "status": "error",
+    "fetched_at": "2026-11-04T05:06:09+00:00",
+    "detail": "not a PDF/text document (text/html; charset=UTF-8)"
+  },
+  "WHO-GTS-MALARIA-2021": {
+    "status": "error",
+    "fetched_at": "2026-11-04T05:06:12+00:00",
+    "detail": "not a PDF/text document (text/html; charset=UTF-8)"
+  },
+  "WHO-MALARIA-SURV-2018": {
+    "status": "error",
+    "fetched_at": "2026-11-04T05:06:15+00:00",
+    "detail": "not a PDF/text document (text/html; charset=UTF-8)"
+  },
+  "WHO-IHR-2005": {
+    "status": "error",
+    "fetched_at": "2026-11-04T05:06:17+00:00",
+    "detail": "not a PDF/text document (text/html; charset=UTF-8)"
+  },
+  "ITU-Y3172-2019": {
+    "status": "ok",
+    "file": "kb/raw/ITU-Y3172-2019.pdf",
+    "sha256": "e42f9a3be3f951d3e19b9007f876f0b389c81b4693f0d8576e18185a1acfe67b",
+    "bytes": 1145173,
+    "final_url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/server/knowledge/InputDocs/AI_Use_Cases/T-REC-Y.3172-201906-I!!PDF-E.pdf",
+    "fetched_at": "2026-11-04T05:06:20+00:00"
+  },
+  "ITU-AIREADY-2025": {
+    "status": "ok",
+    "file": "kb/raw/ITU-AIREADY-2025.pdf",
+    "sha256": "71191768d46b60778c15f8d62b162aff73a319785cfc31ebf76bb944b0c68273",
+    "bytes": 1109667,
+    "final_url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/server/knowledge/InputDocs/AI_Strategies/AI_Ready_Framework_2025.pdf",
+    "fetched_at": "2026-11-04T05:06:24+00:00"
+  },
+  "UN-GOVERNING-AI-2024": {
+    "status": "ok",
+    "file": "kb/raw/UN-GOVERNING-AI-2024.pdf",
+    "sha256": "fed5408c25b61745e6dae2e570d05528aef6b7301436d3311dc6382ee319249b",
+    "bytes": 4270211,
+    "final_url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/server/knowledge/InputDocs/AI_Strategies/Governing%20AI%20for%20Humanity%20Final%20Report.pdf",
+    "fetched_at": "2026-11-04T05:06:27+00:00"
+  },
+  "EV-RESULTS-SUMMARY": {
+    "status": "ok",
+    "file": "documentation/RESULTS_SUMMARY.md",
+    "sha256": "ad488d45c88a9d02b69635bd1929ef4ffc63a9aee0ec3792c86103146ad61b36",
+    "bytes": 23218,
+    "fetched_at": "2026-11-09T08:20:53+00:00"
+  },
+  "EV-SENSOR-VALIDATION": {
+    "status": "ok",
+    "file": "sensor_validation/README.md",
+    "sha256": "c17413db0c220b8230d1c66ef287e821eae174f4f1ae966b50400f3e784dcbd7",
+    "bytes": 6270,
+    "fetched_at": "2026-11-09T08:20:53+00:00"
+  },
+  "EV-NATIONAL-VALIDATION": {
+    "status": "ok",
+    "file": "national_validation/README.md",
+    "sha256": "203d3ee4a7ce788a0be015375aab4632e66e71898d51d0f850799234505fe6d3",
+    "bytes": 7682,
+    "fetched_at": "2026-11-09T08:20:53+00:00"
+  },
+  "EV-INCREMENTAL": {
+    "status": "ok",
+    "file": "foumban_incremental/README.md",
+    "sha256": "59a7b1bc9aba588a2dea609fded220aab099f3ca13e5a704cc099eaafb8e89a1",
+    "bytes": 5695,
+    "fetched_at": "2026-11-09T08:20:53+00:00"
+  },
+  "EV-IOT-ACQUISITION": {
+    "status": "ok",
+    "file": "iot_acquisition/README.md",
+    "sha256": "30582f8aa1b5dd090e37bae6d061ee013026e0228ad560805125d83a43722c62",
+    "bytes": 11673,
+    "fetched_at": "2026-11-09T08:20:53+00:00"
+  },
+  "EV-IOT-HARDWARE": {
+    "status": "ok",
+    "file": "iot_acquisition/HARDWARE_AND_NETWORK.md",
+    "sha256": "7fc776bf88636eb8d63a4e92cf4cbcfcd34d4acc6ae7d1aca4ca65029467aa56",
+    "bytes": 19706,
+    "fetched_at": "2026-11-09T08:20:53+00:00"
+  },
+  "EV-MLOPS-PLATFORM": {
+    "status": "ok",
+    "file": "palualert_app/app/mlops/README.md",
+    "sha256": "dfdfa8b157c236980773e09d917be17048ecc63d54502ea2201c0fcdc35883d0",
+    "bytes": 11207,
+    "fetched_at": "2026-11-09T08:20:53+00:00"
+  }
+}

@@ -1,0 +1,1312 @@
+{
+  "run_id": "S3_indicator_change_20261109T082507Z",
+  "scenario": {
+    "id": "S3_indicator_change",
+    "title": "S3 · A silent change of case definition looks like a drop in malaria",
+    "domain": "healthcare × data governance × model lifecycle",
+    "summary": "Built from foumban_incremental: Foumban's 2019-2022 series (MAPE16_H_13) and its 2023-2025 series (facility + community cases) differ by a factor of 1.31, across a 10-month reporting hole. Spliced, they teach the model a 23 % drop that is a change of definition, not epidemiology. Meanwhile the frozen model degrades every six months. Who may approve a new model version?\n",
+    "agents": [
+      "surveillance",
+      "ministry",
+      "dpa",
+      "advisor"
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "title": "The model's error keeps growing",
+        "release": [
+          {
+            "to": [
+              "surveillance"
+            ],
+            "event": {
+              "id": "E1.1",
+              "type": "monitoring_alert",
+              "text": "Performance monitor, Foumban: the frozen model's MAE has risen over four consecutive six-month windows (about +108 cases per window).\n",
+              "signals": [
+                "performance_drift"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "title": "The data changed, not the disease",
+        "release": [
+          {
+            "to": [
+              "ministry"
+            ],
+            "event": {
+              "id": "E2.1",
+              "type": "data_notice",
+              "text": "PNLP data manager: since January 2023 the reported indicator combines facility and community confirmed cases; the 2019-2022 series used MAPE16_H_13.\n",
+              "signals": [
+                "indicator_definition_change"
+              ]
+            }
+          },
+          {
+            "to": [
+              "surveillance"
+            ],
+            "event": {
+              "id": "E2.2",
+              "type": "data_check",
+              "text": "Foumban source A / source B ratio = 1.31, with no data from March to December 2022.\n",
+              "signals": [
+                "indicator_definition_change"
+              ]
+            }
+          }
+        ],
+        "human": {
+          "RETRAIN_OR_RECALIBRATE": {
+            "decision": "approve",
+            "note": "Recalibration (no hyperparameter to mis-tune) for a six-month trial; fine-tuning only after sandbox validation."
+          }
+        }
+      },
+      {
+        "step": 3,
+        "title": "A model update is proposed",
+        "release": [
+          {
+            "to": "all",
+            "event": {
+              "id": "E3.1",
+              "type": "proposal",
+              "text": "The PaluAlert team proposes to fine-tune the model on 2023-2025 data and put it into production next month.\n",
+              "signals": [
+                "model_update_proposal"
+              ]
+            }
+          }
+        ],
+        "human": {
+          "APPROVE_MODEL_UPDATE": {
+            "decision": "defer",
+            "note": "No body is mandated to approve model versions; referred to the ministry's digital health steering committee."
+          }
+        }
+      }
+    ],
+    "expected": {
+      "actions": [
+        "FLAG_PREDICTIONS_UNRELIABLE",
+        "VERSION_INDICATOR_DEFINITION",
+        "RETRAIN_OR_RECALIBRATE",
+        "FIELD_VERIFICATION",
+        "APPROVE_MODEL_UPDATE"
+      ],
+      "gaps": [
+        "G-INDICATOR-GOVERNANCE",
+        "G-MODEL-CHANGE",
+        "G-MODEL-VALIDATION"
+      ]
+    }
+  },
+  "llm": {
+    "backend": "extractive",
+    "model": ""
+  },
+  "mews": "in-process",
+  "steps": [
+    {
+      "step": 1,
+      "title": "The model's error keeps growing",
+      "released": [
+        {
+          "event": "E1.1",
+          "to": [
+            "surveillance"
+          ],
+          "type": "monitoring_alert",
+          "text": "Performance monitor, Foumban: the frozen model's MAE has risen over four consecutive six-month windows (about +108 cases per window).\n",
+          "signals": [
+            "performance_drift"
+          ]
+        }
+      ],
+      "assessments": {
+        "surveillance": {
+          "agent": "surveillance",
+          "step": 1,
+          "known_events": [
+            "E1.1"
+          ],
+          "new_events": [
+            "E1.1"
+          ],
+          "signals": [
+            "performance_drift"
+          ],
+          "summary": "Surveillance & Model Operations agent: 1 new event(s); signals performance_drift; proposes FLAG_PREDICTIONS_UNRELIABLE.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "frozen model degrades over time doing nothing is the worst option",
+              "chunk_id": "EV-INCREMENTAL#c0001",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § Results: 4 iterations, 12-month seed, 6-month step",
+              "score": 0.2792
+            }
+          ],
+          "claims": [
+            {
+              "text": "[surveillance] on: frozen model degrades over time doing nothing is the worst option",
+              "quote": "Frozen (current situation), 434, 22.6 %, 0.000, baseline. ### The four lessons 1 · Doing nothing is by far the worst option.",
+              "chunk_id": "EV-INCREMENTAL#c0001",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § Results: 4 iterations, 12-month seed, 6-month step",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.2792
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "FLAG_PREDICTIONS_UNRELIABLE",
+              "label": "Flag affected predictions as outside the validity envelope",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "Errors grow when the model is never updated.",
+              "claim_ids": [
+                0
+              ],
+              "proposed_by": "surveillance",
+              "step": 1
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-MODEL-VALIDATION"
+          ],
+          "trace": [
+            "Known events up to step 1: E1.1",
+            "New this step: E1.1 (monitoring_alert)",
+            "Signals: performance_drift",
+            "Rule 'performance_drift' matched -> actions ['FLAG_PREDICTIONS_UNRELIABLE']",
+            "Retrieved 1 chunk(s) for: frozen model degrades over time doing nothing is the worst option",
+            "Evidence gate: 1 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "ministry": {
+          "agent": "ministry",
+          "step": 1,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Ministry of Public Health / PNLP agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 1: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "dpa": {
+          "agent": "dpa",
+          "step": 1,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Data Protection Authority agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 1: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "advisor": {
+          "agent": "advisor",
+          "step": 1,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Policy & legal adviser agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 1: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        }
+      },
+      "messages": [],
+      "coordination": {
+        "proposals": {
+          "FLAG_PREDICTIONS_UNRELIABLE": [
+            "surveillance"
+          ]
+        },
+        "conflicts": [],
+        "ownership": [],
+        "decisions": []
+      }
+    },
+    {
+      "step": 2,
+      "title": "The data changed, not the disease",
+      "released": [
+        {
+          "event": "E2.1",
+          "to": [
+            "ministry"
+          ],
+          "type": "data_notice",
+          "text": "PNLP data manager: since January 2023 the reported indicator combines facility and community confirmed cases; the 2019-2022 series used MAPE16_H_13.\n",
+          "signals": [
+            "indicator_definition_change"
+          ]
+        },
+        {
+          "event": "E2.2",
+          "to": [
+            "surveillance"
+          ],
+          "type": "data_check",
+          "text": "Foumban source A / source B ratio = 1.31, with no data from March to December 2022.\n",
+          "signals": [
+            "indicator_definition_change"
+          ]
+        }
+      ],
+      "assessments": {
+        "surveillance": {
+          "agent": "surveillance",
+          "step": 2,
+          "known_events": [
+            "E1.1",
+            "E2.2"
+          ],
+          "new_events": [
+            "E2.2"
+          ],
+          "signals": [
+            "indicator_definition_change"
+          ],
+          "summary": "Surveillance & Model Operations agent: 1 new event(s); signals indicator_definition_change; proposes VERSION_INDICATOR_DEFINITION, RETRAIN_OR_RECALIBRATE.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "indicator break change of definition not epidemiology",
+              "chunk_id": "EV-INCREMENTAL#c0000",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § foumban_incremental",
+              "score": 0.2043
+            },
+            {
+              "question": "indicator break change of definition not epidemiology",
+              "chunk_id": "EV-INCREMENTAL#c0005",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § Limitations",
+              "score": 0.1137
+            },
+            {
+              "question": "recalibration has no hyperparameter fine-tuning fragile",
+              "chunk_id": "EV-INCREMENTAL#c0001",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § Results: 4 iterations, 12-month seed, 6-month step",
+              "score": 0.1865
+            },
+            {
+              "question": "recalibration has no hyperparameter fine-tuning fragile",
+              "chunk_id": "EV-INCREMENTAL#c0003",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § Drift detection on the spliced series",
+              "score": 0.097
+            }
+          ],
+          "claims": [
+            {
+              "text": "[surveillance] on: indicator break change of definition not epidemiology",
+              "quote": "Splicing the two would teach the. model a 23 % drop that is a change of definition, not epidemiology.",
+              "chunk_id": "EV-INCREMENTAL#c0000",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § foumban_incremental",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.2043
+            },
+            {
+              "text": "[surveillance] on: indicator break change of definition not epidemiology",
+              "quote": "The measured gain does. not transpose as-is to a district whose indicator is consistent with training.",
+              "chunk_id": "EV-INCREMENTAL#c0005",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § Limitations",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1137
+            },
+            {
+              "text": "[surveillance] on: recalibration has no hyperparameter fine-tuning fragile",
+              "quote": "Recalibration has no hyperparameter: it cannot be mis-tuned, for 25 % more. error.",
+              "chunk_id": "EV-INCREMENTAL#c0001",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § Results: 4 iterations, 12-month seed, 6-month step",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1865
+            },
+            {
+              "text": "[surveillance] on: recalibration has no hyperparameter fine-tuning fragile",
+              "quote": "Periodic per-district recalibration as the default, from 12 months of real. cases onwards: no hyperparameter, hence no risk of mis-tuning.",
+              "chunk_id": "EV-INCREMENTAL#c0003",
+              "citation": "EV-INCREMENTAL (ENSPY thesis (this project), 2026), § Drift detection on the spliced series",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.097
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "VERSION_INDICATOR_DEFINITION",
+              "label": "Record the case-indicator change as a versioned data-contract event",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "Part of the apparent drop is a change of case definition; the model must be recalibrated on one consistent definition.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "surveillance",
+              "step": 2
+            },
+            {
+              "code": "RETRAIN_OR_RECALIBRATE",
+              "label": "Recalibrate or fine-tune the model on the new data definition",
+              "owner": "surveillance",
+              "high_impact": true,
+              "rationale": "Part of the apparent drop is a change of case definition; the model must be recalibrated on one consistent definition.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "surveillance",
+              "step": 2
+            }
+          ],
+          "requests": [
+            {
+              "from": "surveillance",
+              "to": "ministry",
+              "question": "Who is mandated to approve a new model version before it is used operationally?",
+              "step": 2
+            }
+          ],
+          "probes": [
+            "G-INDICATOR-GOVERNANCE",
+            "G-MODEL-CHANGE"
+          ],
+          "trace": [
+            "Known events up to step 2: E1.1, E2.2",
+            "New this step: E2.2 (data_check)",
+            "Signals: indicator_definition_change",
+            "Rule 'indicator_definition_change' matched -> actions ['VERSION_INDICATOR_DEFINITION', 'RETRAIN_OR_RECALIBRATE'], consult ['ministry']",
+            "Retrieved 2 chunk(s) for: indicator break change of definition not epidemiology",
+            "Retrieved 2 chunk(s) for: recalibration has no hyperparameter fine-tuning fragile",
+            "Evidence gate: 4 claim(s) admitted, 0 rejected",
+            "High-impact actions routed to human decision: RETRAIN_OR_RECALIBRATE"
+          ],
+          "llm": null
+        },
+        "ministry": {
+          "agent": "ministry",
+          "step": 2,
+          "known_events": [
+            "E2.1"
+          ],
+          "new_events": [
+            "E2.1"
+          ],
+          "signals": [
+            "indicator_definition_change"
+          ],
+          "summary": "Ministry of Public Health / PNLP agent: 1 new event(s); signals indicator_definition_change; proposes FIELD_VERIFICATION.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "définition de cas paludisme confirmé indicateurs de surveillance",
+              "chunk_id": "CM-PSNLP-2019-2023#c0149",
+              "citation": "CM-PSNLP-2019-2023 (Ministère de la Santé Publique / PNLP, 2019), p. 69",
+              "score": 0.1404
+            },
+            {
+              "question": "définition de cas paludisme confirmé indicateurs de surveillance",
+              "chunk_id": "CM-PSNLP-2024-2028#c0229",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 84",
+              "score": 0.1369
+            }
+          ],
+          "claims": [
+            {
+              "text": "[ministry] on: définition de cas paludisme confirmé indicateurs de surveillance",
+              "quote": "D'ici 2023, Amener 100% des sites sentinelles à mener les activités complémentaires de surveillance du paludisme Stratégie 2.2.1 :",
+              "chunk_id": "CM-PSNLP-2019-2023#c0149",
+              "citation": "CM-PSNLP-2019-2023 (Ministère de la Santé Publique / PNLP, 2019), p. 69",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1404
+            },
+            {
+              "text": "[ministry] on: définition de cas paludisme confirmé indicateurs de surveillance",
+              "quote": "(i) la Surveillance du paludisme, (ii) Le Suivi et Evaluation et (iii) la Recherche.",
+              "chunk_id": "CM-PSNLP-2024-2028#c0229",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 84",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1369
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "FIELD_VERIFICATION",
+              "label": "Request field verification: RDT positivity, stock levels, DHIS2 completeness",
+              "owner": "ministry",
+              "high_impact": false,
+              "rationale": "The indicator change is a data-governance event, not an epidemiological one.",
+              "claim_ids": [
+                0,
+                1
+              ],
+              "proposed_by": "ministry",
+              "step": 2
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-INDICATOR-GOVERNANCE"
+          ],
+          "trace": [
+            "Known events up to step 2: E2.1",
+            "New this step: E2.1 (data_notice)",
+            "Signals: indicator_definition_change",
+            "Rule 'indicator_definition_change' matched -> actions ['FIELD_VERIFICATION']",
+            "Retrieved 2 chunk(s) for: définition de cas paludisme confirmé indicateurs de surveillance",
+            "Evidence gate: 2 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "dpa": {
+          "agent": "dpa",
+          "step": 2,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Data Protection Authority agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 2: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "advisor": {
+          "agent": "advisor",
+          "step": 2,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Policy & legal adviser agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 2: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        }
+      },
+      "messages": [
+        {
+          "request": {
+            "from": "surveillance",
+            "to": "ministry",
+            "question": "Who is mandated to approve a new model version before it is used operationally?",
+            "step": 2
+          },
+          "reply": {
+            "from": "ministry",
+            "to": "surveillance",
+            "question": "Who is mandated to approve a new model version before it is used operationally?",
+            "answer": "Current position (step 2): FIELD_VERIFICATION. The indicator change is a data-governance event, not an epidemiological one. No provision on this point was found in the documents within my mandate; I flag it as a possible gap.",
+            "claims": [],
+            "step": 2,
+            "found": false,
+            "position": "Current position (step 2): FIELD_VERIFICATION. The indicator change is a data-governance event, not an epidemiological one. "
+          }
+        }
+      ],
+      "coordination": {
+        "proposals": {
+          "VERSION_INDICATOR_DEFINITION": [
+            "surveillance"
+          ],
+          "RETRAIN_OR_RECALIBRATE": [
+            "surveillance"
+          ],
+          "FIELD_VERIFICATION": [
+            "ministry"
+          ]
+        },
+        "conflicts": [],
+        "ownership": [],
+        "decisions": [
+          {
+            "step": 2,
+            "action": "RETRAIN_OR_RECALIBRATE",
+            "label": "Recalibrate or fine-tune the model on the new data definition",
+            "proposed_by": [
+              "surveillance"
+            ],
+            "decision": "approve",
+            "note": "Recalibration (no hyperparameter to mis-tune) for a six-month trial; fine-tuning only after sandbox validation.",
+            "by": "human (scripted exercise director)"
+          }
+        ]
+      }
+    },
+    {
+      "step": 3,
+      "title": "A model update is proposed",
+      "released": [
+        {
+          "event": "E3.1",
+          "to": [
+            "surveillance",
+            "ministry",
+            "dpa",
+            "advisor"
+          ],
+          "type": "proposal",
+          "text": "The PaluAlert team proposes to fine-tune the model on 2023-2025 data and put it into production next month.\n",
+          "signals": [
+            "model_update_proposal"
+          ]
+        }
+      ],
+      "assessments": {
+        "surveillance": {
+          "agent": "surveillance",
+          "step": 3,
+          "known_events": [
+            "E1.1",
+            "E2.2",
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "model_update_proposal"
+          ],
+          "summary": "Surveillance & Model Operations agent: 1 new event(s); signals model_update_proposal; proposes APPROVE_MODEL_UPDATE.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "Model Registry model_versions schema only Retraining Pipeline not implemented",
+              "chunk_id": "EV-MLOPS-PLATFORM#c0001",
+              "citation": "EV-MLOPS-PLATFORM (ENSPY thesis (this project), 2026), § The actual data flow",
+              "score": 0.2373
+            },
+            {
+              "question": "Model Registry model_versions schema only Retraining Pipeline not implemented",
+              "chunk_id": "EV-MLOPS-PLATFORM#c0005",
+              "citation": "EV-MLOPS-PLATFORM (ENSPY thesis (this project), 2026), § 5 · Design decisions",
+              "score": 0.1208
+            }
+          ],
+          "claims": [
+            {
+              "text": "[surveillance] on: Model Registry model_versions schema only Retraining Pipeline not implemented",
+              "quote": "Retraining Pipeline, not implemented: see \"next\", ⬜. ## 3 · Changing the data source This was the explicit requirement: make switching easy.",
+              "chunk_id": "EV-MLOPS-PLATFORM#c0001",
+              "citation": "EV-MLOPS-PLATFORM (ENSPY thesis (this project), 2026), § The actual data flow",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.2373
+            },
+            {
+              "text": "[surveillance] on: Model Registry model_versions schema only Retraining Pipeline not implemented",
+              "quote": "Retraining pipeline: the model_versions schema exists; what is missing. is the trigger on major drift, the retrain itself, *challenger vs champion*. validation and promotion.",
+              "chunk_id": "EV-MLOPS-PLATFORM#c0005",
+              "citation": "EV-MLOPS-PLATFORM (ENSPY thesis (this project), 2026), § 5 · Design decisions",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1208
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "APPROVE_MODEL_UPDATE",
+              "label": "Formally approve a new model version for operational use",
+              "owner": null,
+              "high_impact": true,
+              "rationale": "A new model version should be formally approved before operational use; the platform records versions but no approval step exists.",
+              "claim_ids": [
+                0,
+                1
+              ],
+              "proposed_by": "surveillance",
+              "step": 3
+            }
+          ],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 3: E1.1, E2.2, E3.1",
+            "New this step: E3.1 (proposal)",
+            "Signals: model_update_proposal",
+            "Rule 'model_update_proposal' matched -> actions ['APPROVE_MODEL_UPDATE']",
+            "Retrieved 2 chunk(s) for: Model Registry model_versions schema only Retraining Pipeline not implemented",
+            "Evidence gate: 2 claim(s) admitted, 0 rejected",
+            "High-impact actions routed to human decision: APPROVE_MODEL_UPDATE"
+          ],
+          "llm": null
+        },
+        "ministry": {
+          "agent": "ministry",
+          "step": 3,
+          "known_events": [
+            "E2.1",
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "model_update_proposal"
+          ],
+          "summary": "Ministry of Public Health / PNLP agent: 1 new event(s); signals model_update_proposal; proposes no action.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "validation d'outils et de nouvelles technologies comité technique",
+              "chunk_id": "CM-PSNSN-2026-2030#c0025",
+              "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 14",
+              "score": 0.1234
+            },
+            {
+              "question": "validation d'outils et de nouvelles technologies comité technique",
+              "chunk_id": "CM-PSNSN-2026-2030#c0112",
+              "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 54–56",
+              "score": 0.1007
+            }
+          ],
+          "claims": [
+            {
+              "text": "[ministry] on: validation d'outils et de nouvelles technologies comité technique",
+              "quote": "Élaboration et implémentation d’outils de pilotage, de suivi et d’évaluation de la santé numérique Outils de pilotage, de suivi et d’évaluation validés et mis en œuvre Non Non défini 2025 Oui Rapport d'atelier de validation d'outils de pilotage, de suivi et d’évaluation Revue documentaire CI, CIS - MINSANTE Rapports annuels d'activités, de suivi et d'évaluation élaborés et validés Non Non défini 2025 Oui Oui Oui Oui",
+              "chunk_id": "CM-PSNSN-2026-2030#c0112",
+              "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 54–56",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1007
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [
+            {
+              "from": "ministry",
+              "to": "advisor",
+              "question": "Which body approves updates to an AI system used in health in global practice?",
+              "step": 3
+            }
+          ],
+          "probes": [
+            "G-MODEL-CHANGE"
+          ],
+          "trace": [
+            "Known events up to step 3: E2.1, E3.1",
+            "New this step: E3.1 (proposal)",
+            "Signals: model_update_proposal",
+            "Rule 'model_update_proposal' matched -> actions -, consult ['advisor']",
+            "Retrieved 2 chunk(s) for: validation d'outils et de nouvelles technologies comité technique",
+            "Evidence gate: 1 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "dpa": {
+          "agent": "dpa",
+          "step": 3,
+          "known_events": [
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "model_update_proposal"
+          ],
+          "summary": "Data Protection Authority agent: 1 new event(s); signals model_update_proposal; proposes no action.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 3: E3.1",
+            "New this step: E3.1 (proposal)",
+            "Signals: model_update_proposal",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "advisor": {
+          "agent": "advisor",
+          "step": 3,
+          "known_events": [
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "model_update_proposal"
+          ],
+          "summary": "Policy & legal adviser agent: 1 new event(s); signals model_update_proposal; proposes LOG_POLICY_GAP.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "monitoring and updating AI systems after deployment",
+              "chunk_id": "WHO-AI-ETHICS-2021#c0431",
+              "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 151",
+              "score": 0.083
+            },
+            {
+              "question": "monitoring and updating AI systems after deployment",
+              "chunk_id": "WHO-AI-ETHICS-2021#c0442",
+              "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 155–156",
+              "score": 0.0797
+            }
+          ],
+          "claims": [
+            {
+              "text": "[advisor] on: monitoring and updating AI systems after deployment",
+              "quote": "Considerations for AI developers The following considerations are for individuals, research organizations and companies involved in the design, deployment and updating of AI technologies used in health.",
+              "chunk_id": "WHO-AI-ETHICS-2021#c0431",
+              "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 151",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "global",
+              "score": 0.083
+            },
+            {
+              "text": "[advisor] on: monitoring and updating AI systems after deployment",
+              "quote": "Specific considerations The accuracy and risks of error of the AI technology should be evaluated to assess implications for: • Incorporating, verifying and validating changes to the tool or system; • monitoring and ensuring the effectiveness and usefulness of the tool or system over time; • how long the results or the technology can be used; • how often the tool or system should be updated; and • who is responsible",
+              "chunk_id": "WHO-AI-ETHICS-2021#c0442",
+              "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 155–156",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "global",
+              "score": 0.0797
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "LOG_POLICY_GAP",
+              "label": "Log a policy, standards or responsibility gap with global examples",
+              "owner": "advisor",
+              "high_impact": false,
+              "rationale": "Log a policy, standards or responsibility gap with global examples",
+              "claim_ids": [
+                0,
+                1
+              ],
+              "proposed_by": "advisor",
+              "step": 3
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-MODEL-CHANGE"
+          ],
+          "trace": [
+            "Known events up to step 3: E3.1",
+            "New this step: E3.1 (proposal)",
+            "Signals: model_update_proposal",
+            "Rule 'model_update_proposal' matched -> actions ['LOG_POLICY_GAP']",
+            "Retrieved 2 chunk(s) for: monitoring and updating AI systems after deployment",
+            "Evidence gate: 2 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        }
+      },
+      "messages": [
+        {
+          "request": {
+            "from": "ministry",
+            "to": "advisor",
+            "question": "Which body approves updates to an AI system used in health in global practice?",
+            "step": 3
+          },
+          "reply": {
+            "from": "advisor",
+            "to": "ministry",
+            "question": "Which body approves updates to an AI system used in health in global practice?",
+            "answer": "Current position (step 3): LOG_POLICY_GAP. Log a policy, standards or responsibility gap with global examples No provision on this point was found in the documents within my mandate; I flag it as a possible gap.",
+            "claims": [],
+            "step": 3,
+            "found": false,
+            "position": "Current position (step 3): LOG_POLICY_GAP. Log a policy, standards or responsibility gap with global examples "
+          }
+        }
+      ],
+      "coordination": {
+        "proposals": {
+          "APPROVE_MODEL_UPDATE": [
+            "surveillance"
+          ],
+          "LOG_POLICY_GAP": [
+            "advisor"
+          ]
+        },
+        "conflicts": [],
+        "ownership": [
+          {
+            "action": "APPROVE_MODEL_UPDATE",
+            "issue": "no institution is mandated",
+            "proposed_by": [
+              "surveillance"
+            ]
+          }
+        ],
+        "decisions": [
+          {
+            "step": 3,
+            "action": "APPROVE_MODEL_UPDATE",
+            "label": "Formally approve a new model version for operational use",
+            "proposed_by": [
+              "surveillance"
+            ],
+            "decision": "defer",
+            "note": "No body is mandated to approve model versions; referred to the ministry's digital health steering committee.",
+            "by": "human (scripted exercise director)"
+          }
+        ]
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "step": 2,
+      "action": "RETRAIN_OR_RECALIBRATE",
+      "label": "Recalibrate or fine-tune the model on the new data definition",
+      "proposed_by": [
+        "surveillance"
+      ],
+      "decision": "approve",
+      "note": "Recalibration (no hyperparameter to mis-tune) for a six-month trial; fine-tuning only after sandbox validation.",
+      "by": "human (scripted exercise director)"
+    },
+    {
+      "step": 3,
+      "action": "APPROVE_MODEL_UPDATE",
+      "label": "Formally approve a new model version for operational use",
+      "proposed_by": [
+        "surveillance"
+      ],
+      "decision": "defer",
+      "note": "No body is mandated to approve model versions; referred to the ministry's digital health steering committee.",
+      "by": "human (scripted exercise director)"
+    }
+  ],
+  "gaps": [
+    {
+      "probe_id": "G-ALERT-AUTHORITY",
+      "category": "responsibility",
+      "category_label": "Unclear responsibility",
+      "title": "No designated authority to act on model-generated (predicted) epidemic alerts",
+      "status": "absent",
+      "national_best_score": 0.0526,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "Closest national text for: No designated authority to act on model-generated (predicted) epidemic alerts",
+          "quote": "L’équipe cadre assure la responsabilité d’offrir les services de soins de base selon les dispositions du document de stratégie de Renforcement du Système de Santé (SRSS).",
+          "chunk_id": "CM-PSNLP-2024-2028#c0304",
+          "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 106",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0526,
+          "overlap": 0.22
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No designated authority to act on model-generated (predicted) epidemic alerts",
+          "quote": "KEY ETHICAL PRINCIPLES FOR USE OF ARTIFICIAL INTELLIGENCE FOR HEALTH ETHICS AND GOVERNANCE OF ARTIFICIAL INTELLIGENCE FOR HEALTH 29 5.5 Ensure inclusiveness and equity Inclusiveness requires that AI used in health care is designed to encourage the widest possible appropriate,",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0113",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 44–45",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0884
+        }
+      ],
+      "recommendation": "Designate in regulation which body may act on a model-generated alert, at which confidence, and how the decision and its evidence are recorded.",
+      "y3172": [
+        "P",
+        "D",
+        "SINK"
+      ],
+      "readiness": [
+        "D7 Strategy Alignment",
+        "D10 AI & Policies"
+      ],
+      "triggered_by": [
+        {
+          "agent": "ministry",
+          "step": 2,
+          "why": "unanswered consultation from surveillance"
+        }
+      ],
+      "national_overlap": 0.22,
+      "missing_sources": [
+        "WHO-MALARIA-SURV-2018",
+        "AE-DOH-AI-POLICY-2018"
+      ]
+    },
+    {
+      "probe_id": "G-MODEL-VALIDATION",
+      "category": "standards",
+      "category_label": "Standards gap",
+      "title": "No standard for validating and monitoring a model before and after deployment",
+      "status": "absent",
+      "national_best_score": 0.1375,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "Closest national text for: No standard for validating and monitoring a model before and after deployment",
+          "quote": "DAJC, DRFP, DEPMINSANTE 15 000 000 15 000 000 Budget de l'État/ Appui des PTF Organisation d'un atelier de validation du modèle de fonctionnement et de projets d'actes de création du Centre National de Télémédecine SG, CI.",
+          "chunk_id": "CM-PSNSN-2026-2030#c0058",
+          "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 30",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.1375,
+          "overlap": 0.22
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No standard for validating and monitoring a model before and after deployment",
+          "quote": "deployment. Local innovation involves large amounts of data and research efforts. The contextualization will facilitate the deployment of AI integration. Chapter 3 22 AI Ready – Analysis Towards a Standardized Readiness Framework Dimension Metrics Contextualization & Regional Impact • Number/quality of regionally developed patents/technology compo nents/solutions. o Datasets, models, research, guidelines, toolsets, a",
+          "chunk_id": "ITU-AIREADY-2025#c0042",
+          "citation": "ITU-AIREADY-2025 (ITU, 2025), p. 23–24",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "standard",
+          "score": 0.0569
+        }
+      ],
+      "recommendation": "Require external validation, a declared validity envelope, local calibration before new-region use, and post-deployment drift monitoring.",
+      "y3172": [
+        "M",
+        "MLFO",
+        "SANDBOX"
+      ],
+      "readiness": [
+        "D4 Contextualization and Regional Impact",
+        "D5 Level of Integration of AI in Workflows",
+        "D10 AI & Policies"
+      ],
+      "triggered_by": [
+        {
+          "agent": "surveillance",
+          "step": 1,
+          "why": "performance_drift"
+        }
+      ],
+      "national_overlap": 0.22,
+      "missing_sources": [
+        "WHO-AI-REG-2023"
+      ]
+    },
+    {
+      "probe_id": "G-DATA-SHARING",
+      "category": "coordination",
+      "category_label": "Coordination problem",
+      "title": "No framework for routine data sharing between health, meteorology and telecom actors",
+      "status": "weak",
+      "national_best_score": 0.0798,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "National provision for: No framework for routine data sharing between health, meteorology and telecom actors",
+          "quote": "Suivant les dispositions du Décret N° 2013/093 du 04 avril 2013 portant organisation du Ministère de la santé Publique, la Cellule des Informations Sanitaires est chargée entre autres de la conception et du suivi de la mise en œuvre du Système d’Informations Sanitaires et de l’élaboration des indicateurs sanitaires nationaux.",
+          "chunk_id": "CM-PSNLP-2019-2023#c0062",
+          "citation": "CM-PSNLP-2019-2023 (Ministère de la Santé Publique / PNLP, 2019), p. 29",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0798,
+          "overlap": 0.45
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No framework for routine data sharing between health, meteorology and telecom actors",
+          "quote": "Accelerate the integration of AI in the core sectors outlined in the Digital Transformation Strategy, notably sectors with high social and economic value, including agriculture, education, health, climate change and natural resource management, and regional peace and security. iv.",
+          "chunk_id": "AU-AI-STRATEGY-2024#c0058",
+          "citation": "AU-AI-STRATEGY-2024 (African Union, 2024), p. 31–32",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "regional",
+          "score": 0.0674
+        },
+        {
+          "text": "Practice example for: No framework for routine data sharing between health, meteorology and telecom actors",
+          "quote": "In 2014, the US National Institutes of Health introduced their Genomic Data Sharing Policy, which is intended to encourage “broad and responsible sharing of genomic research data” (283).",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0296",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 104",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0522
+        }
+      ],
+      "recommendation": "Adopt data-sharing agreements between health, meteorology and network operators, with a common schema for climate-health data.",
+      "y3172": [
+        "SRC",
+        "C"
+      ],
+      "readiness": [
+        "D3 Cross-Domain Correlation Analysis",
+        "D7 Strategy Alignment"
+      ],
+      "triggered_by": [
+        {
+          "agent": "advisor",
+          "step": 3,
+          "why": "unanswered consultation from ministry"
+        }
+      ],
+      "national_overlap": 0.45,
+      "missing_sources": [
+        "CM-PSNSN-2020-2024"
+      ]
+    },
+    {
+      "probe_id": "G-INDICATOR-GOVERNANCE",
+      "category": "coordination",
+      "category_label": "Coordination problem",
+      "title": "Changes to surveillance indicator definitions are not versioned or announced to data users",
+      "status": "weak",
+      "national_best_score": 0.1074,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "National provision for: Changes to surveillance indicator definitions are not versioned or announced to data users",
+          "quote": "Suivi de la performance et de la maintenance (MTTR) Organisation d'un atelier de définition des indicateurs nationaux de suivi de la performance et de la maintenance CI, DEPMINSANTE 15 000 000 15 000 000 Budget de l'État/ Appui des PTF Collecte, analyse et consolidation régulière des données de suivi",
+          "chunk_id": "CM-PSNSN-2026-2030#c0088",
+          "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 43",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.1074,
+          "overlap": 0.43
+        }
+      ],
+      "practice_examples": [],
+      "recommendation": "Version every surveillance indicator definition and notify downstream data users (including models) before a change takes effect.",
+      "y3172": [
+        "SRC",
+        "PP",
+        "MLFO"
+      ],
+      "readiness": [
+        "D1 Data/Model Marketplace",
+        "D5 Level of Integration of AI in Workflows"
+      ],
+      "triggered_by": [
+        {
+          "agent": "surveillance",
+          "step": 2,
+          "why": "indicator_definition_change"
+        },
+        {
+          "agent": "ministry",
+          "step": 2,
+          "why": "indicator_definition_change"
+        }
+      ],
+      "national_overlap": 0.43,
+      "missing_sources": [
+        "WHO-MALARIA-SURV-2018"
+      ]
+    },
+    {
+      "probe_id": "G-MODEL-CHANGE",
+      "category": "responsibility",
+      "category_label": "Unclear responsibility",
+      "title": "Nobody is mandated to approve a new model version for operational use",
+      "status": "weak",
+      "national_best_score": 0.0723,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "National provision for: Nobody is mandated to approve a new model version for operational use",
+          "quote": "GIZ 15 000 000 15 000 000 15 000 000 15 000 000 15 000 000 75 000 000 Budget de l'État/ Appui des PTF Mise à jour du contrat de maintenance et de mise à jour continue des systèmes de gestion de la CSU (facturation, enrôlement, reporting, …) CTN-CSU,CIMINSANTE;",
+          "chunk_id": "CM-PSNSN-2026-2030#c0049",
+          "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 26–27",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0723,
+          "overlap": 0.36
+        }
+      ],
+      "practice_examples": [],
+      "recommendation": "Assign model-change approval (retrain / recalibrate / roll back) to a named body with a documented release procedure.",
+      "y3172": [
+        "MLFO"
+      ],
+      "readiness": [
+        "D5 Level of Integration of AI in Workflows",
+        "D9 Impacts of Humans in AI Integration"
+      ],
+      "triggered_by": [
+        {
+          "agent": "surveillance",
+          "step": 2,
+          "why": "indicator_definition_change"
+        },
+        {
+          "agent": "ministry",
+          "step": 3,
+          "why": "model_update_proposal"
+        },
+        {
+          "agent": "advisor",
+          "step": 3,
+          "why": "model_update_proposal"
+        },
+        {
+          "agent": "coordinator",
+          "step": 3,
+          "why": "unowned APPROVE_MODEL_UPDATE"
+        }
+      ],
+      "national_overlap": 0.36,
+      "missing_sources": [
+        "WHO-AI-REG-2023"
+      ]
+    }
+  ],
+  "evaluation": {
+    "expected_actions_found": [
+      "APPROVE_MODEL_UPDATE",
+      "FIELD_VERIFICATION",
+      "FLAG_PREDICTIONS_UNRELIABLE",
+      "RETRAIN_OR_RECALIBRATE",
+      "VERSION_INDICATOR_DEFINITION"
+    ],
+    "expected_actions_missed": [],
+    "action_recall": 1.0,
+    "expected_gaps_found": [
+      "G-INDICATOR-GOVERNANCE",
+      "G-MODEL-CHANGE",
+      "G-MODEL-VALIDATION"
+    ],
+    "expected_gaps_missed": [],
+    "gap_recall": 1.0,
+    "conflicts": 0,
+    "claims_admitted": 12,
+    "claims_rejected": 0,
+    "human_decisions": 2
+  }
+}

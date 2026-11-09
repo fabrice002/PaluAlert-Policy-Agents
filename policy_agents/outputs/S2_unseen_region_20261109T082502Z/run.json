@@ -1,0 +1,2061 @@
+{
+  "run_id": "S2_unseen_region_20261109T082502Z",
+  "scenario": {
+    "id": "S2_unseen_region",
+    "title": "S2 · Scaling the early-warning model to a region it has never been validated in",
+    "domain": "healthcare × AI governance × data protection × cross-border health",
+    "summary": "The thesis validity envelope says the model ranks districts well nationally (Spearman 0.859) but its absolute forecasts fail in unseen regions (Leave-One-Region-Out R² -0.461) and unseen years (external R² -1.74). A ministerial instruction to scale up, an offer of free fine-tuning on a foreign cloud and a rumour from across the Nigerian border arrive at different agents at different times.\n",
+    "agents": [
+      "surveillance",
+      "ministry",
+      "dpa",
+      "telecom",
+      "advisor"
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "title": "Instruction to deploy nationwide",
+        "release": [
+          {
+            "to": [
+              "ministry"
+            ],
+            "event": {
+              "id": "E1.1",
+              "type": "instruction",
+              "text": "The Minister instructs that PaluAlert be used in all 10 regions, including Extrême-Nord, from the 2027 rainy season.\n",
+              "signals": [
+                "nationwide_deployment_request"
+              ]
+            }
+          },
+          {
+            "to": [
+              "surveillance"
+            ],
+            "event": {
+              "id": "E1.2",
+              "type": "tasking",
+              "text": "Produce the June-August 2027 outlook for Mokolo (Extrême-Nord) with climatological inputs, ahead of the national roll-out.\n",
+              "signals": [
+                "nationwide_deployment_request"
+              ],
+              "tool": {
+                "name": "predict_series",
+                "args": {
+                  "district": "Mokolo",
+                  "readings": [
+                    {
+                      "year": 2027,
+                      "month": 6,
+                      "temperature_c": 26.5,
+                      "humidity_pct": 66,
+                      "pressure_hpa": 925,
+                      "precipitation_mm": 120
+                    },
+                    {
+                      "year": 2027,
+                      "month": 7,
+                      "temperature_c": 25.2,
+                      "humidity_pct": 77,
+                      "pressure_hpa": 926,
+                      "precipitation_mm": 230
+                    },
+                    {
+                      "year": 2027,
+                      "month": 8,
+                      "temperature_c": 24.8,
+                      "humidity_pct": 81,
+                      "pressure_hpa": 926,
+                      "precipitation_mm": 270
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "to": [
+              "dpa"
+            ],
+            "event": {
+              "id": "E1.3",
+              "type": "plan",
+              "text": "MINSANTE plans to use the model's district risk scores to prioritise bed-net distribution and community health worker visits.\n",
+              "signals": [
+                "nationwide_deployment_request"
+              ]
+            }
+          }
+        ],
+        "human": {
+          "DEPLOY_NATIONWIDE": {
+            "decision": "reject",
+            "note": "Operational use only where a local calibration period has been completed; ranking-only outputs elsewhere."
+          }
+        }
+      },
+      {
+        "step": 2,
+        "title": "A free fine-tuning offer on a foreign cloud",
+        "release": [
+          {
+            "to": [
+              "surveillance",
+              "dpa"
+            ],
+            "event": {
+              "id": "E2.1",
+              "type": "offer",
+              "text": "A technology partner offers free fine-tuning on its cloud, hosted outside Cameroon, using health-area level DHIS2 confirmed-case counts 2019-2025 for Extrême-Nord.\n",
+              "signals": [
+                "foreign_cloud_training"
+              ]
+            }
+          }
+        ],
+        "human": {
+          "BLOCK_TRANSFER": {
+            "decision": "approve",
+            "note": "No health-area data leave the country; district aggregates may be used in the ITU sandbox under a processing agreement."
+          }
+        }
+      },
+      {
+        "step": 3,
+        "title": "A signal from across the border",
+        "release": [
+          {
+            "to": [
+              "ministry",
+              "advisor"
+            ],
+            "event": {
+              "id": "E3.1",
+              "type": "rumour",
+              "text": "Community radio reports a rise in fever cases on the Nigerian side of the Mayo-Tsanaga valley. No laboratory confirmation yet.\n",
+              "signals": [
+                "cross_border_signal"
+              ]
+            }
+          },
+          {
+            "to": [
+              "surveillance"
+            ],
+            "event": {
+              "id": "E3.2",
+              "type": "tasking",
+              "text": "Rank Extrême-Nord border districts for July; Mokolo and Mozogo fall in the top quartile of the model's ranking.\n",
+              "signals": [
+                "cross_border_signal"
+              ]
+            }
+          }
+        ],
+        "human": {
+          "NOTIFY_WHO_IHR": {
+            "decision": "defer",
+            "note": "Assess with the IHR decision instrument once cases are confirmed; a model ranking is not a confirmed event."
+          },
+          "INFORM_NEIGHBOUR_COUNTRY": {
+            "decision": "approve",
+            "note": "Share the district ranking and its limits with Nigerian counterparts through the existing cross-border malaria initiative."
+          },
+          "ISSUE_PUBLIC_ALERT": {
+            "decision": "defer",
+            "note": "Wait for field verification."
+          }
+        }
+      }
+    ],
+    "expected": {
+      "actions": [
+        "LOCAL_CALIBRATION_PERIOD",
+        "RANK_ONLY_OUTPUT",
+        "PUBLISH_TRANSPARENCY_NOTE",
+        "DEPLOY_NATIONWIDE",
+        "REQUIRE_DPIA",
+        "PSEUDONYMISE_AGGREGATE",
+        "BLOCK_TRANSFER",
+        "FIELD_VERIFICATION",
+        "NOTIFY_WHO_IHR",
+        "INFORM_NEIGHBOUR_COUNTRY"
+      ],
+      "gaps": [
+        "G-MODEL-VALIDATION",
+        "G-AI-HEALTH-REGULATION",
+        "G-HEALTH-DATA-TRANSFER",
+        "G-AUTOMATED-DECISION",
+        "G-IHR-PREDICTED",
+        "G-TRANSPARENCY"
+      ]
+    }
+  },
+  "llm": {
+    "backend": "extractive",
+    "model": ""
+  },
+  "mews": "in-process",
+  "steps": [
+    {
+      "step": 1,
+      "title": "Instruction to deploy nationwide",
+      "released": [
+        {
+          "event": "E1.1",
+          "to": [
+            "ministry"
+          ],
+          "type": "instruction",
+          "text": "The Minister instructs that PaluAlert be used in all 10 regions, including Extrême-Nord, from the 2027 rainy season.\n",
+          "signals": [
+            "nationwide_deployment_request"
+          ]
+        },
+        {
+          "event": "E1.2",
+          "to": [
+            "surveillance"
+          ],
+          "type": "tasking",
+          "text": "Produce the June-August 2027 outlook for Mokolo (Extrême-Nord) with climatological inputs, ahead of the national roll-out.\n",
+          "signals": [
+            "nationwide_deployment_request"
+          ]
+        },
+        {
+          "event": "E1.3",
+          "to": [
+            "dpa"
+          ],
+          "type": "plan",
+          "text": "MINSANTE plans to use the model's district risk scores to prioritise bed-net distribution and community health worker visits.\n",
+          "signals": [
+            "nationwide_deployment_request"
+          ]
+        }
+      ],
+      "assessments": {
+        "surveillance": {
+          "agent": "surveillance",
+          "step": 1,
+          "known_events": [
+            "E1.2"
+          ],
+          "new_events": [
+            "E1.2"
+          ],
+          "signals": [
+            "low_risk_output",
+            "nationwide_deployment_request"
+          ],
+          "summary": "Surveillance & Model Operations agent: 1 new event(s); signals low_risk_output, nationwide_deployment_request; proposes LOCAL_CALIBRATION_PERIOD, RANK_ONLY_OUTPUT, PUBLISH_TRANSPARENCY_NOTE.",
+          "tool_results": [
+            {
+              "tool": "predict_series",
+              "event": "E1.2",
+              "mews": "in-process",
+              "district": "Mokolo",
+              "region": "Extreme Nord",
+              "population": 305033,
+              "months": [
+                {
+                  "year": 2027,
+                  "month": 6,
+                  "predicted_cases": 1051,
+                  "predicted_incidence": 3.45,
+                  "risk_level": "Low",
+                  "model_used": "NO-LAG",
+                  "threshold": 11.59
+                },
+                {
+                  "year": 2027,
+                  "month": 7,
+                  "predicted_cases": 1127,
+                  "predicted_incidence": 3.69,
+                  "risk_level": "Low",
+                  "model_used": "LAG",
+                  "threshold": 11.59
+                },
+                {
+                  "year": 2027,
+                  "month": 8,
+                  "predicted_cases": 1669,
+                  "predicted_incidence": 5.47,
+                  "risk_level": "Low",
+                  "model_used": "LAG",
+                  "threshold": 11.59
+                }
+              ],
+              "derived_signals": [
+                "low_risk_output"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "question": "Leave-One-Region-Out deployment in an unseen region",
+              "chunk_id": "EV-RESULTS-SUMMARY#c0003",
+              "citation": "EV-RESULTS-SUMMARY (ENSPY thesis (this project), 2026), § 6 · Best-performing models",
+              "score": 0.1621
+            },
+            {
+              "question": "ranks district burden Spearman worst-quartile absolute prediction fails",
+              "chunk_id": "EV-NATIONAL-VALIDATION#c0000",
+              "citation": "EV-NATIONAL-VALIDATION (ENSPY thesis (this project), 2026), § national_validation",
+              "score": 0.0953
+            },
+            {
+              "question": "ranks district burden Spearman worst-quartile absolute prediction fails",
+              "chunk_id": "EV-NATIONAL-VALIDATION#c0003",
+              "citation": "EV-NATIONAL-VALIDATION (ENSPY thesis (this project), 2026), § What the `dataset/` folder actually contains",
+              "score": 0.0688
+            }
+          ],
+          "claims": [
+            {
+              "text": "[surveillance] on: Leave-One-Region-Out deployment in an unseen region",
+              "quote": "Both are persisted in saved_models/ and deployment_bundle/. ## 7 · Evaluation metrics: the validity envelope This table is the thesis's central result.",
+              "chunk_id": "EV-RESULTS-SUMMARY#c0003",
+              "citation": "EV-RESULTS-SUMMARY (ENSPY thesis (this project), 2026), § 6 · Best-performing models",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1621
+            },
+            {
+              "text": "[surveillance] on: ranks district burden Spearman worst-quartile absolute prediction fails",
+              "quote": "It places 68 % of the. truly worst-quartile districts in its own worst quartile, against 25 % by chance.",
+              "chunk_id": "EV-NATIONAL-VALIDATION#c0000",
+              "citation": "EV-NATIONAL-VALIDATION (ENSPY thesis (this project), 2026), § national_validation",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.0953
+            },
+            {
+              "text": "[surveillance] on: ranks district burden Spearman worst-quartile absolute prediction fails",
+              "quote": "Comparing absolute values instead would. manufacture a spurious 2× over-prediction that says nothing about the model. ### 2 · There was no climate data for 2024–2025 cameroon_districts_climate.csv",
+              "chunk_id": "EV-NATIONAL-VALIDATION#c0003",
+              "citation": "EV-NATIONAL-VALIDATION (ENSPY thesis (this project), 2026), § What the `dataset/` folder actually contains",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.0688
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "LOCAL_CALIBRATION_PERIOD",
+              "label": "Run a local calibration period before using outputs in a new region",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "Validation shows the model ranks districts well nationally but its absolute forecasts fail in unseen regions and years.",
+              "claim_ids": [
+                0,
+                1,
+                2
+              ],
+              "proposed_by": "surveillance",
+              "step": 1
+            },
+            {
+              "code": "RANK_ONLY_OUTPUT",
+              "label": "Publish relative district ranking only, not absolute case forecasts",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "Validation shows the model ranks districts well nationally but its absolute forecasts fail in unseen regions and years.",
+              "claim_ids": [
+                0,
+                1,
+                2
+              ],
+              "proposed_by": "surveillance",
+              "step": 1
+            },
+            {
+              "code": "PUBLISH_TRANSPARENCY_NOTE",
+              "label": "Publish a model card / transparency note with the validity envelope",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "Validation shows the model ranks districts well nationally but its absolute forecasts fail in unseen regions and years.",
+              "claim_ids": [
+                0,
+                1,
+                2
+              ],
+              "proposed_by": "surveillance",
+              "step": 1
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-MODEL-VALIDATION",
+            "G-TRANSPARENCY"
+          ],
+          "trace": [
+            "Known events up to step 1: E1.2",
+            "New this step: E1.2 (tasking)",
+            "Signals: low_risk_output, nationwide_deployment_request",
+            "Rule 'nationwide_deployment_request' matched -> actions ['LOCAL_CALIBRATION_PERIOD', 'RANK_ONLY_OUTPUT', 'PUBLISH_TRANSPARENCY_NOTE']",
+            "Retrieved 1 chunk(s) for: Leave-One-Region-Out deployment in an unseen region",
+            "Retrieved 2 chunk(s) for: ranks district burden Spearman worst-quartile absolute prediction fails",
+            "Retrieved 0 chunk(s) for: do not deploy to a new region without a local calibration period",
+            "Evidence gate: 3 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "ministry": {
+          "agent": "ministry",
+          "step": 1,
+          "known_events": [
+            "E1.1"
+          ],
+          "new_events": [
+            "E1.1"
+          ],
+          "signals": [
+            "nationwide_deployment_request"
+          ],
+          "summary": "Ministry of Public Health / PNLP agent: 1 new event(s); signals nationwide_deployment_request; proposes DEPLOY_NATIONWIDE.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "réduire la morbidité liée au paludisme d'ici 2028",
+              "chunk_id": "CM-PSNLP-2024-2028#c0193",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 71",
+              "score": 0.2026
+            },
+            {
+              "question": "réduire la morbidité liée au paludisme d'ici 2028",
+              "chunk_id": "CM-PSNLP-2024-2028#c0194",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 71–72",
+              "score": 0.1967
+            },
+            {
+              "question": "santé numérique système d'information sanitaire déploiement national",
+              "chunk_id": "CM-PSNLP-2024-2028#c0158",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 60–61",
+              "score": 0.082
+            },
+            {
+              "question": "santé numérique système d'information sanitaire déploiement national",
+              "chunk_id": "CM-PSNSN-2026-2030#c0116",
+              "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 58",
+              "score": 0.0774
+            }
+          ],
+          "claims": [
+            {
+              "text": "[ministry] on: réduire la morbidité liée au paludisme d'ici 2028",
+              "quote": "D’ici 2028, réduire d’au moins 75%, la morbidité liée au paludisme par rapport à la situation de 2015.",
+              "chunk_id": "CM-PSNLP-2024-2028#c0193",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 71",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.2026
+            },
+            {
+              "text": "[ministry] on: santé numérique système d'information sanitaire déploiement national",
+              "quote": "Surveillance, SNIS, Suivi et évaluation, Recherche o Système de rapportage des données est parfaitement intégré à celui du Système National d'Information Sanitaire (SNIS) ; o Tenue effective des réunions de revue et de validation des données est effective aux niveaux central et au niveau régional ; o Missions de vérification sur site de la qualité des données (MRDQA) sont régulièrement",
+              "chunk_id": "CM-PSNLP-2024-2028#c0158",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 60–61",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.082
+            },
+            {
+              "text": "[ministry] on: santé numérique système d'information sanitaire déploiement national",
+              "quote": "Plaidoyer et déploiement des ressources humaines en santé numérique dans les structures sanitaires.",
+              "chunk_id": "CM-PSNSN-2026-2030#c0116",
+              "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 58",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.0774
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "DEPLOY_NATIONWIDE",
+              "label": "Extend operational use of the model to all regions",
+              "owner": "ministry",
+              "high_impact": true,
+              "rationale": "Ministerial instruction, consistent with the strategic plan's national targets.",
+              "claim_ids": [
+                0,
+                1,
+                2
+              ],
+              "proposed_by": "ministry",
+              "step": 1
+            }
+          ],
+          "requests": [
+            {
+              "from": "ministry",
+              "to": "advisor",
+              "question": "What global guidance applies before a health AI tool is scaled to regions where it was not validated?",
+              "step": 1
+            }
+          ],
+          "probes": [
+            "G-AI-HEALTH-REGULATION"
+          ],
+          "trace": [
+            "Known events up to step 1: E1.1",
+            "New this step: E1.1 (instruction)",
+            "Signals: nationwide_deployment_request",
+            "Rule 'nationwide_deployment_request' matched -> actions ['DEPLOY_NATIONWIDE'], consult ['advisor']",
+            "Retrieved 2 chunk(s) for: réduire la morbidité liée au paludisme d'ici 2028",
+            "Retrieved 2 chunk(s) for: santé numérique système d'information sanitaire déploiement national",
+            "Evidence gate: 3 claim(s) admitted, 0 rejected",
+            "High-impact actions routed to human decision: DEPLOY_NATIONWIDE"
+          ],
+          "llm": null
+        },
+        "dpa": {
+          "agent": "dpa",
+          "step": 1,
+          "known_events": [
+            "E1.3"
+          ],
+          "new_events": [
+            "E1.3"
+          ],
+          "signals": [
+            "nationwide_deployment_request"
+          ],
+          "summary": "Data Protection Authority agent: 1 new event(s); signals nationwide_deployment_request; proposes no action.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "décision produisant des effets juridiques fondée sur un traitement automatisé",
+              "chunk_id": "CM-LAW-2024-017#c0033",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 45, p. 17",
+              "score": 0.0998
+            },
+            {
+              "question": "décision produisant des effets juridiques fondée sur un traitement automatisé",
+              "chunk_id": "CM-LAW-2024-017#c0032",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 44, p. 16–17",
+              "score": 0.0896
+            }
+          ],
+          "claims": [
+            {
+              "text": "[dpa] on: décision produisant des effets juridiques fondée sur un traitement automatisé",
+              "quote": "(3) La personne concernée a également le droit : - d'obtenir une intervention humaine de la part du re able du traitement; -_ d'exprimer son point de vue ; - de contester la décision fondée sur le traiteme omalisé.",
+              "chunk_id": "CM-LAW-2024-017#c0033",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 45, p. 17",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.0998
+            },
+            {
+              "text": "[dpa] on: décision produisant des effets juridiques fondée sur un traitement automatisé",
+              "quote": "ARTICLE 44.- (1) La personne concernéea le droit de s'opposer à toute décision basée exclusivement sur le traitement automatisé de ses données à caractère | personnel, y compris le profilage.",
+              "chunk_id": "CM-LAW-2024-017#c0032",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 44, p. 16–17",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.0896
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [
+            "G-AUTOMATED-DECISION"
+          ],
+          "trace": [
+            "Known events up to step 1: E1.3",
+            "New this step: E1.3 (plan)",
+            "Signals: nationwide_deployment_request",
+            "Rule 'nationwide_deployment_request' matched -> actions -",
+            "Retrieved 2 chunk(s) for: décision produisant des effets juridiques fondée sur un traitement automatisé",
+            "Evidence gate: 2 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "telecom": {
+          "agent": "telecom",
+          "step": 1,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Telecom regulator & cybersecurity agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 1: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "advisor": {
+          "agent": "advisor",
+          "step": 1,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Policy & legal adviser agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 1: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        }
+      },
+      "messages": [
+        {
+          "request": {
+            "from": "ministry",
+            "to": "advisor",
+            "question": "What global guidance applies before a health AI tool is scaled to regions where it was not validated?",
+            "step": 1
+          },
+          "reply": {
+            "from": "advisor",
+            "to": "ministry",
+            "question": "What global guidance applies before a health AI tool is scaled to regions where it was not validated?",
+            "answer": "No provision on this point was found in the documents within my mandate; I flag it as a possible gap.",
+            "claims": [],
+            "step": 1,
+            "found": false,
+            "position": ""
+          }
+        }
+      ],
+      "coordination": {
+        "proposals": {
+          "LOCAL_CALIBRATION_PERIOD": [
+            "surveillance"
+          ],
+          "RANK_ONLY_OUTPUT": [
+            "surveillance"
+          ],
+          "PUBLISH_TRANSPARENCY_NOTE": [
+            "surveillance"
+          ],
+          "DEPLOY_NATIONWIDE": [
+            "ministry"
+          ]
+        },
+        "conflicts": [
+          {
+            "between": [
+              "DEPLOY_NATIONWIDE",
+              "LOCAL_CALIBRATION_PERIOD"
+            ],
+            "issue": "deploy now vs. calibrate first",
+            "proposed_by": {
+              "DEPLOY_NATIONWIDE": [
+                "ministry"
+              ],
+              "LOCAL_CALIBRATION_PERIOD": [
+                "surveillance"
+              ]
+            },
+            "resolution": "resolved by human decision: DEPLOY_NATIONWIDE rejected"
+          }
+        ],
+        "ownership": [],
+        "decisions": [
+          {
+            "step": 1,
+            "action": "DEPLOY_NATIONWIDE",
+            "label": "Extend operational use of the model to all regions",
+            "proposed_by": [
+              "ministry"
+            ],
+            "decision": "reject",
+            "note": "Operational use only where a local calibration period has been completed; ranking-only outputs elsewhere.",
+            "by": "human (scripted exercise director)"
+          }
+        ]
+      }
+    },
+    {
+      "step": 2,
+      "title": "A free fine-tuning offer on a foreign cloud",
+      "released": [
+        {
+          "event": "E2.1",
+          "to": [
+            "surveillance",
+            "dpa"
+          ],
+          "type": "offer",
+          "text": "A technology partner offers free fine-tuning on its cloud, hosted outside Cameroon, using health-area level DHIS2 confirmed-case counts 2019-2025 for Extrême-Nord.\n",
+          "signals": [
+            "foreign_cloud_training"
+          ]
+        }
+      ],
+      "assessments": {
+        "surveillance": {
+          "agent": "surveillance",
+          "step": 2,
+          "known_events": [
+            "E1.2",
+            "E2.1"
+          ],
+          "new_events": [
+            "E2.1"
+          ],
+          "signals": [
+            "foreign_cloud_training"
+          ],
+          "summary": "Surveillance & Model Operations agent: 1 new event(s); signals foreign_cloud_training; proposes PSEUDONYMISE_AGGREGATE.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "Y.3172 sandbox training testing before deployment",
+              "chunk_id": "ITU-Y3172-2019#c0055",
+              "citation": "ITU-Y3172-2019 (ITU-T, 2019), p. 24–25",
+              "score": 0.0826
+            },
+            {
+              "question": "Y.3172 sandbox training testing before deployment",
+              "chunk_id": "ITU-Y3172-2019#c0047",
+              "citation": "ITU-Y3172-2019 (ITU-T, 2019), p. 21–22",
+              "score": 0.0811
+            }
+          ],
+          "claims": [
+            {
+              "text": "[surveillance] on: Y.3172 sandbox training testing before deployment",
+              "quote": "The following points are to be noted: – The reference point between the ML pipeline subsystem and ML sandbox subsystem allows the ML pipelines to interface with the ML sandbox subsystem for the training and updating of ML models. – Data from the ML underlay networks and/or the simulated ML underlay networks may be used to train the ML models in the ML sandbox subsystem. –",
+              "chunk_id": "ITU-Y3172-2019#c0055",
+              "citation": "ITU-Y3172-2019 (ITU-T, 2019), p. 24–25",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "standard",
+              "score": 0.0826
+            },
+            {
+              "text": "[surveillance] on: Y.3172 sandbox training testing before deployment",
+              "quote": "For training or testing, the ML sandbox can use data generated from simulated ML underlay networks and/or live networks.",
+              "chunk_id": "ITU-Y3172-2019#c0047",
+              "citation": "ITU-Y3172-2019 (ITU-T, 2019), p. 21–22",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "standard",
+              "score": 0.0811
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "PSEUDONYMISE_AGGREGATE",
+              "label": "Process only pseudonymised, district-aggregated data",
+              "owner": "dpa",
+              "high_impact": false,
+              "rationale": "Fine-tuning can run in a sandbox, but the data involved are health data.",
+              "claim_ids": [
+                0,
+                1
+              ],
+              "proposed_by": "surveillance",
+              "step": 2
+            }
+          ],
+          "requests": [
+            {
+              "from": "surveillance",
+              "to": "dpa",
+              "question": "A partner offers to fine-tune the model on health-area case data hosted on a foreign cloud. Under what conditions may these data be transferred abroad?",
+              "step": 2
+            }
+          ],
+          "probes": [
+            "G-HEALTH-DATA-TRANSFER"
+          ],
+          "trace": [
+            "Known events up to step 2: E1.2, E2.1",
+            "New this step: E2.1 (offer)",
+            "Signals: foreign_cloud_training",
+            "Rule 'foreign_cloud_training' matched -> actions ['PSEUDONYMISE_AGGREGATE'], consult ['dpa']",
+            "Retrieved 2 chunk(s) for: Y.3172 sandbox training testing before deployment",
+            "Evidence gate: 2 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "ministry": {
+          "agent": "ministry",
+          "step": 2,
+          "known_events": [
+            "E1.1"
+          ],
+          "new_events": [],
+          "signals": [],
+          "summary": "Ministry of Public Health / PNLP agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 2: E1.1",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "dpa": {
+          "agent": "dpa",
+          "step": 2,
+          "known_events": [
+            "E1.3",
+            "E2.1"
+          ],
+          "new_events": [
+            "E2.1"
+          ],
+          "signals": [
+            "foreign_cloud_training"
+          ],
+          "summary": "Data Protection Authority agent: 1 new event(s); signals foreign_cloud_training; proposes REQUIRE_DPIA, PSEUDONYMISE_AGGREGATE, BLOCK_TRANSFER.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "transfert de données à caractère personnel vers un pays tiers niveau de protection",
+              "chunk_id": "CM-LAW-2024-017#c0025",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 32, p. 13",
+              "score": 0.2178
+            },
+            {
+              "question": "transfert de données à caractère personnel vers un pays tiers niveau de protection",
+              "chunk_id": "CM-LAW-2024-017#c0010",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 6, 8, p. 6",
+              "score": 0.1918
+            },
+            {
+              "question": "données sensibles données de santé interdiction traitement exceptions",
+              "chunk_id": "AU-MALABO-2014#c0043",
+              "citation": "AU-MALABO-2014 (African Union, 2014), art. 14, p. 21",
+              "score": 0.0918
+            },
+            {
+              "question": "données sensibles données de santé interdiction traitement exceptions",
+              "chunk_id": "CM-LAW-2024-017#c0015",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 19, 20, 21, p. 8–9",
+              "score": 0.0832
+            },
+            {
+              "question": "cross-border transfer of personal data adequate level of protection",
+              "chunk_id": "CM-LAW-2024-017#c0010",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 6, 8, p. 6",
+              "score": 0.1773
+            },
+            {
+              "question": "cross-border transfer of personal data adequate level of protection",
+              "chunk_id": "CM-LAW-2024-017#c0041",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 59, 60, 61, p. 20–21",
+              "score": 0.16
+            }
+          ],
+          "claims": [
+            {
+              "text": "[dpa] on: transfert de données à caractère personnel vers un pays tiers niveau de protection",
+              "quote": "droifé que Jui@onfère la présente loi à l'égard des responsables du traitement. ARTICLE 32.- (1) Le transfert de don a personnel vers un Etat étranger, ou à une organisation inté OMalé, est subordonné à l'obtention d'une autorisation préalable délivrée Par l'Aÿtorité de protection des données à caractère personnel dans les gonditionS%ermettant de garantir l'exercice des droits de la personne concerné 7 (2)AFr | élivr",
+              "chunk_id": "CM-LAW-2024-017#c0025",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 32, p. 13",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.2178
+            },
+            {
+              "text": "[dpa] on: transfert de données à caractère personnel vers un pays tiers niveau de protection",
+              "quote": "Transfert international de données : acheminement des do à caractère personnel au-delà des frontières d'un pays vers un autre, qûè ce $@it vers un Etat tiers ou une organisation internationale.",
+              "chunk_id": "CM-LAW-2024-017#c0010",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 6, 8, p. 6",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.1918
+            },
+            {
+              "text": "[dpa] on: données sensibles données de santé interdiction traitement exceptions",
+              "quote": "Principle of transparency ofpersonal data processing The principle of transparency requires mandatory disclosure of information on personal data by the data controller. | Principle 6:",
+              "chunk_id": "AU-MALABO-2014#c0043",
+              "citation": "AU-MALABO-2014 (African Union, 2014), art. 14, p. 21",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "regional",
+              "score": 0.0918
+            },
+            {
+              "text": "[dpa] on: données sensibles données de santé interdiction traitement exceptions",
+              "quote": "PUBLIQUE PRÉSIDENCE DE LA RE PTSAC PRES RETAS -TE RECQUENTAIRE SERVICE DOEXTOR AFFAIRS en SEE LEGISLATII co CHAPITRE III DES OBLIGATIONS DU RESPONSABLE DU TRAITEMENT DES DONNEES ET DU SOUS-TRAITANT ARTICLE 20.- Le responsable du traitement et le sous-traitant sont assujettis aux mêmes obligations au titre de l’activité de traitement des données à caractère personnel.",
+              "chunk_id": "CM-LAW-2024-017#c0015",
+              "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 19, 20, 21, p. 8–9",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "national",
+              "score": 0.0832
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "REQUIRE_DPIA",
+              "label": "Require a data-protection impact assessment before processing",
+              "owner": "dpa",
+              "high_impact": false,
+              "rationale": "Identifiable health data cannot leave the country without the safeguards the law requires; aggregated, pseudonymised data reduce the risk.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "dpa",
+              "step": 2
+            },
+            {
+              "code": "PSEUDONYMISE_AGGREGATE",
+              "label": "Process only pseudonymised, district-aggregated data",
+              "owner": "dpa",
+              "high_impact": false,
+              "rationale": "Identifiable health data cannot leave the country without the safeguards the law requires; aggregated, pseudonymised data reduce the risk.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "dpa",
+              "step": 2
+            },
+            {
+              "code": "BLOCK_TRANSFER",
+              "label": "Do not transfer identifiable health data abroad",
+              "owner": "dpa",
+              "high_impact": true,
+              "rationale": "Identifiable health data cannot leave the country without the safeguards the law requires; aggregated, pseudonymised data reduce the risk.",
+              "claim_ids": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "proposed_by": "dpa",
+              "step": 2
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-HEALTH-DATA-TRANSFER"
+          ],
+          "trace": [
+            "Known events up to step 2: E1.3, E2.1",
+            "New this step: E2.1 (offer)",
+            "Signals: foreign_cloud_training",
+            "Rule 'foreign_cloud_training' matched -> actions ['REQUIRE_DPIA', 'PSEUDONYMISE_AGGREGATE', 'BLOCK_TRANSFER']",
+            "Retrieved 2 chunk(s) for: transfert de données à caractère personnel vers un pays tiers niveau de protection",
+            "Retrieved 2 chunk(s) for: données sensibles données de santé interdiction traitement exceptions",
+            "Retrieved 2 chunk(s) for: cross-border transfer of personal data adequate level of protection",
+            "Evidence gate: 4 claim(s) admitted, 0 rejected",
+            "High-impact actions routed to human decision: BLOCK_TRANSFER"
+          ],
+          "llm": null
+        },
+        "telecom": {
+          "agent": "telecom",
+          "step": 2,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Telecom regulator & cybersecurity agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 2: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "advisor": {
+          "agent": "advisor",
+          "step": 2,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Policy & legal adviser agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 2: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        }
+      },
+      "messages": [
+        {
+          "request": {
+            "from": "surveillance",
+            "to": "dpa",
+            "question": "A partner offers to fine-tune the model on health-area case data hosted on a foreign cloud. Under what conditions may these data be transferred abroad?",
+            "step": 2
+          },
+          "reply": {
+            "from": "dpa",
+            "to": "surveillance",
+            "question": "A partner offers to fine-tune the model on health-area case data hosted on a foreign cloud. Under what conditions may these data be transferred abroad?",
+            "answer": "Current position (step 2): REQUIRE_DPIA, PSEUDONYMISE_AGGREGATE, BLOCK_TRANSFER. Identifiable health data cannot leave the country without the safeguards the law requires; aggregated, pseudonymised data reduce the risk. No provision on this point was found in the documents within my mandate; I flag it as a possible gap.",
+            "claims": [],
+            "step": 2,
+            "found": false,
+            "position": "Current position (step 2): REQUIRE_DPIA, PSEUDONYMISE_AGGREGATE, BLOCK_TRANSFER. Identifiable health data cannot leave the country without the safeguards the law requires; aggregated, pseudonymised data reduce the risk. "
+          }
+        }
+      ],
+      "coordination": {
+        "proposals": {
+          "PSEUDONYMISE_AGGREGATE": [
+            "surveillance",
+            "dpa"
+          ],
+          "REQUIRE_DPIA": [
+            "dpa"
+          ],
+          "BLOCK_TRANSFER": [
+            "dpa"
+          ]
+        },
+        "conflicts": [],
+        "ownership": [],
+        "decisions": [
+          {
+            "step": 2,
+            "action": "BLOCK_TRANSFER",
+            "label": "Do not transfer identifiable health data abroad",
+            "proposed_by": [
+              "dpa"
+            ],
+            "decision": "approve",
+            "note": "No health-area data leave the country; district aggregates may be used in the ITU sandbox under a processing agreement.",
+            "by": "human (scripted exercise director)"
+          }
+        ]
+      }
+    },
+    {
+      "step": 3,
+      "title": "A signal from across the border",
+      "released": [
+        {
+          "event": "E3.1",
+          "to": [
+            "ministry",
+            "advisor"
+          ],
+          "type": "rumour",
+          "text": "Community radio reports a rise in fever cases on the Nigerian side of the Mayo-Tsanaga valley. No laboratory confirmation yet.\n",
+          "signals": [
+            "cross_border_signal"
+          ]
+        },
+        {
+          "event": "E3.2",
+          "to": [
+            "surveillance"
+          ],
+          "type": "tasking",
+          "text": "Rank Extrême-Nord border districts for July; Mokolo and Mozogo fall in the top quartile of the model's ranking.\n",
+          "signals": [
+            "cross_border_signal"
+          ]
+        }
+      ],
+      "assessments": {
+        "surveillance": {
+          "agent": "surveillance",
+          "step": 3,
+          "known_events": [
+            "E1.2",
+            "E2.1",
+            "E3.2"
+          ],
+          "new_events": [
+            "E3.2"
+          ],
+          "signals": [
+            "cross_border_signal"
+          ],
+          "summary": "Surveillance & Model Operations agent: 1 new event(s); signals cross_border_signal; proposes RANK_ONLY_OUTPUT.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "between-region ranking geography dominance",
+              "chunk_id": "EV-NATIONAL-VALIDATION#c0001",
+              "citation": "EV-NATIONAL-VALIDATION (ENSPY thesis (this project), 2026), § Results",
+              "score": 0.1019
+            },
+            {
+              "question": "between-region ranking geography dominance",
+              "chunk_id": "EV-RESULTS-SUMMARY#c0012",
+              "citation": "EV-RESULTS-SUMMARY (ENSPY thesis (this project), 2026), § 10 · Limitations",
+              "score": 0.0748
+            }
+          ],
+          "claims": [
+            {
+              "text": "[surveillance] on: between-region ranking geography dominance",
+              "quote": "The model knows. which *region* is worse (ρ = 0.915) better than which district inside it.",
+              "chunk_id": "EV-NATIONAL-VALIDATION#c0001",
+              "citation": "EV-NATIONAL-VALIDATION (ENSPY thesis (this project), 2026), § Results",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.1019
+            },
+            {
+              "text": "[surveillance] on: between-region ranking geography dominance",
+              "quote": "Geography dominance makes it partly a spatial lookup: the model largely. learns *where* a district is and adjusts marginally for climate.",
+              "chunk_id": "EV-RESULTS-SUMMARY#c0012",
+              "citation": "EV-RESULTS-SUMMARY (ENSPY thesis (this project), 2026), § 10 · Limitations",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "evidence",
+              "score": 0.0748
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "RANK_ONLY_OUTPUT",
+              "label": "Publish relative district ranking only, not absolute case forecasts",
+              "owner": "surveillance",
+              "high_impact": false,
+              "rationale": "The model can rank border districts but cannot confirm cases.",
+              "claim_ids": [
+                0,
+                1
+              ],
+              "proposed_by": "surveillance",
+              "step": 3
+            }
+          ],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 3: E1.2, E2.1, E3.2",
+            "New this step: E3.2 (tasking)",
+            "Signals: cross_border_signal",
+            "Rule 'cross_border_signal' matched -> actions ['RANK_ONLY_OUTPUT']",
+            "Retrieved 2 chunk(s) for: between-region ranking geography dominance",
+            "Evidence gate: 2 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "ministry": {
+          "agent": "ministry",
+          "step": 3,
+          "known_events": [
+            "E1.1",
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "cross_border_signal"
+          ],
+          "summary": "Ministry of Public Health / PNLP agent: 1 new event(s); signals cross_border_signal; proposes FIELD_VERIFICATION, NOTIFY_WHO_IHR, INFORM_NEIGHBOUR_COUNTRY.",
+          "tool_results": [],
+          "evidence": [
+            {
+              "question": "notification events public health emergency of international concern 24 hours",
+              "chunk_id": "CM-PSNLP-2019-2023#c0181",
+              "citation": "CM-PSNLP-2019-2023 (Ministère de la Santé Publique / PNLP, 2019), p. 81",
+              "score": 0.0772
+            },
+            {
+              "question": "notification events public health emergency of international concern 24 hours",
+              "chunk_id": "WHO-AI-ETHICS-2021#c0236",
+              "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 83–84",
+              "score": 0.0681
+            },
+            {
+              "question": "collaboration transfrontalière pays voisins paludisme",
+              "chunk_id": "CM-PSNLP-2024-2028#c0167",
+              "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 62–64",
+              "score": 0.124
+            }
+          ],
+          "claims": [
+            {
+              "text": "[ministry] on: notification events public health emergency of international concern 24 hours",
+              "quote": "In public health, predictive analytics can forecast major health events, including outbreaks, before they occur.",
+              "chunk_id": "WHO-AI-ETHICS-2021#c0236",
+              "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 83–84",
+              "verified": true,
+              "reason": "verbatim match",
+              "source_scope": "global",
+              "score": 0.0681
+            }
+          ],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "FIELD_VERIFICATION",
+              "label": "Request field verification: RDT positivity, stock levels, DHIS2 completeness",
+              "owner": "ministry",
+              "high_impact": false,
+              "rationale": "A possible cross-border event must be assessed under the IHR before notifying.",
+              "claim_ids": [
+                0
+              ],
+              "proposed_by": "ministry",
+              "step": 3
+            },
+            {
+              "code": "NOTIFY_WHO_IHR",
+              "label": "Notify or consult WHO through the National IHR Focal Point",
+              "owner": "ministry",
+              "high_impact": true,
+              "rationale": "A possible cross-border event must be assessed under the IHR before notifying.",
+              "claim_ids": [
+                0
+              ],
+              "proposed_by": "ministry",
+              "step": 3
+            },
+            {
+              "code": "INFORM_NEIGHBOUR_COUNTRY",
+              "label": "Share surveillance information with the neighbouring country",
+              "owner": "ministry",
+              "high_impact": true,
+              "rationale": "A possible cross-border event must be assessed under the IHR before notifying.",
+              "claim_ids": [
+                0
+              ],
+              "proposed_by": "ministry",
+              "step": 3
+            }
+          ],
+          "requests": [
+            {
+              "from": "ministry",
+              "to": "advisor",
+              "question": "Does a model-predicted, unconfirmed risk increase near a border trigger IHR notification?",
+              "step": 3
+            }
+          ],
+          "probes": [
+            "G-IHR-PREDICTED"
+          ],
+          "trace": [
+            "Known events up to step 3: E1.1, E3.1",
+            "New this step: E3.1 (rumour)",
+            "Signals: cross_border_signal",
+            "Rule 'cross_border_signal' matched -> actions ['FIELD_VERIFICATION', 'NOTIFY_WHO_IHR', 'INFORM_NEIGHBOUR_COUNTRY'], consult ['advisor']",
+            "Retrieved 2 chunk(s) for: notification events public health emergency of international concern 24 hours",
+            "Retrieved 1 chunk(s) for: collaboration transfrontalière pays voisins paludisme",
+            "Evidence gate: 1 claim(s) admitted, 0 rejected",
+            "High-impact actions routed to human decision: NOTIFY_WHO_IHR, INFORM_NEIGHBOUR_COUNTRY"
+          ],
+          "llm": null
+        },
+        "dpa": {
+          "agent": "dpa",
+          "step": 3,
+          "known_events": [
+            "E1.3",
+            "E2.1"
+          ],
+          "new_events": [],
+          "signals": [],
+          "summary": "Data Protection Authority agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 3: E1.3, E2.1",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "telecom": {
+          "agent": "telecom",
+          "step": 3,
+          "known_events": [],
+          "new_events": [],
+          "signals": [],
+          "summary": "Telecom regulator & cybersecurity agent: no new information this step.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [],
+          "requests": [],
+          "probes": [],
+          "trace": [
+            "Known events up to step 3: none",
+            "Signals: none",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        },
+        "advisor": {
+          "agent": "advisor",
+          "step": 3,
+          "known_events": [
+            "E3.1"
+          ],
+          "new_events": [
+            "E3.1"
+          ],
+          "signals": [
+            "cross_border_signal"
+          ],
+          "summary": "Policy & legal adviser agent: 1 new event(s); signals cross_border_signal; proposes LOG_POLICY_GAP.",
+          "tool_results": [],
+          "evidence": [],
+          "claims": [],
+          "rejected_claims": [],
+          "actions": [
+            {
+              "code": "LOG_POLICY_GAP",
+              "label": "Log a policy, standards or responsibility gap with global examples",
+              "owner": "advisor",
+              "high_impact": false,
+              "rationale": "Log a policy, standards or responsibility gap with global examples",
+              "claim_ids": [],
+              "proposed_by": "advisor",
+              "step": 3
+            }
+          ],
+          "requests": [],
+          "probes": [
+            "G-IHR-PREDICTED"
+          ],
+          "trace": [
+            "Known events up to step 3: E3.1",
+            "New this step: E3.1 (rumour)",
+            "Signals: cross_border_signal",
+            "Rule 'cross_border_signal' matched -> actions ['LOG_POLICY_GAP']",
+            "Retrieved 0 chunk(s) for: International Health Regulations notification assessment of events",
+            "Evidence gate: 0 claim(s) admitted, 0 rejected"
+          ],
+          "llm": null
+        }
+      },
+      "messages": [
+        {
+          "request": {
+            "from": "ministry",
+            "to": "advisor",
+            "question": "Does a model-predicted, unconfirmed risk increase near a border trigger IHR notification?",
+            "step": 3
+          },
+          "reply": {
+            "from": "advisor",
+            "to": "ministry",
+            "question": "Does a model-predicted, unconfirmed risk increase near a border trigger IHR notification?",
+            "answer": "Current position (step 3): LOG_POLICY_GAP. Log a policy, standards or responsibility gap with global examples Under WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 67: “An algorithm that predicts mortality from training data may have learnt that a patient who visits a chaplain is at increased risk of death (181).”",
+            "claims": [
+              {
+                "text": "[advisor] answer to ministry: Does a model-predicted, unconfirmed risk increase near a border trigger IHR notification?",
+                "quote": "An algorithm that predicts mortality from training data may have learnt that a patient who visits a chaplain is at increased risk of death (181).",
+                "chunk_id": "WHO-AI-ETHICS-2021#c0185",
+                "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 67",
+                "verified": true,
+                "reason": "verbatim match",
+                "source_scope": "global",
+                "score": 0.0321
+              }
+            ],
+            "step": 3,
+            "found": true,
+            "position": "Current position (step 3): LOG_POLICY_GAP. Log a policy, standards or responsibility gap with global examples "
+          }
+        }
+      ],
+      "coordination": {
+        "proposals": {
+          "RANK_ONLY_OUTPUT": [
+            "surveillance"
+          ],
+          "FIELD_VERIFICATION": [
+            "ministry"
+          ],
+          "NOTIFY_WHO_IHR": [
+            "ministry"
+          ],
+          "INFORM_NEIGHBOUR_COUNTRY": [
+            "ministry"
+          ],
+          "LOG_POLICY_GAP": [
+            "advisor"
+          ]
+        },
+        "conflicts": [],
+        "ownership": [],
+        "decisions": [
+          {
+            "step": 3,
+            "action": "INFORM_NEIGHBOUR_COUNTRY",
+            "label": "Share surveillance information with the neighbouring country",
+            "proposed_by": [
+              "ministry"
+            ],
+            "decision": "approve",
+            "note": "Share the district ranking and its limits with Nigerian counterparts through the existing cross-border malaria initiative.",
+            "by": "human (scripted exercise director)"
+          },
+          {
+            "step": 3,
+            "action": "NOTIFY_WHO_IHR",
+            "label": "Notify or consult WHO through the National IHR Focal Point",
+            "proposed_by": [
+              "ministry"
+            ],
+            "decision": "defer",
+            "note": "Assess with the IHR decision instrument once cases are confirmed; a model ranking is not a confirmed event.",
+            "by": "human (scripted exercise director)"
+          }
+        ]
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "step": 1,
+      "action": "DEPLOY_NATIONWIDE",
+      "label": "Extend operational use of the model to all regions",
+      "proposed_by": [
+        "ministry"
+      ],
+      "decision": "reject",
+      "note": "Operational use only where a local calibration period has been completed; ranking-only outputs elsewhere.",
+      "by": "human (scripted exercise director)"
+    },
+    {
+      "step": 2,
+      "action": "BLOCK_TRANSFER",
+      "label": "Do not transfer identifiable health data abroad",
+      "proposed_by": [
+        "dpa"
+      ],
+      "decision": "approve",
+      "note": "No health-area data leave the country; district aggregates may be used in the ITU sandbox under a processing agreement.",
+      "by": "human (scripted exercise director)"
+    },
+    {
+      "step": 3,
+      "action": "INFORM_NEIGHBOUR_COUNTRY",
+      "label": "Share surveillance information with the neighbouring country",
+      "proposed_by": [
+        "ministry"
+      ],
+      "decision": "approve",
+      "note": "Share the district ranking and its limits with Nigerian counterparts through the existing cross-border malaria initiative.",
+      "by": "human (scripted exercise director)"
+    },
+    {
+      "step": 3,
+      "action": "NOTIFY_WHO_IHR",
+      "label": "Notify or consult WHO through the National IHR Focal Point",
+      "proposed_by": [
+        "ministry"
+      ],
+      "decision": "defer",
+      "note": "Assess with the IHR decision instrument once cases are confirmed; a model ranking is not a confirmed event.",
+      "by": "human (scripted exercise director)"
+    }
+  ],
+  "gaps": [
+    {
+      "probe_id": "G-IHR-PREDICTED",
+      "category": "coordination",
+      "category_label": "Coordination problem",
+      "title": "Predicted (not yet confirmed) risk has no defined place in IHR notification practice",
+      "status": "absent",
+      "national_best_score": 0.0933,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "Closest national text for: Predicted (not yet confirmed) risk has no defined place in IHR notification practice",
+          "quote": "La coordination et le suivi de la mise en œuvre des activités seront faits par le point focal ISDC du district, les chefs",
+          "chunk_id": "CM-PSNLP-2024-2028#c0313",
+          "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 108",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0933,
+          "overlap": 0.25
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: Predicted (not yet confirmed) risk has no defined place in IHR notification practice",
+          "quote": "In public health, predictive analytics can forecast major health events, including outbreaks, before they occur.",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0236",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 83–84",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0846
+        }
+      ],
+      "recommendation": "Define how model-predicted cross-border risk is assessed against the IHR decision instrument before any notification or neighbour information.",
+      "y3172": [
+        "D",
+        "SINK"
+      ],
+      "readiness": [
+        "D7 Strategy Alignment"
+      ],
+      "triggered_by": [
+        {
+          "agent": "ministry",
+          "step": 3,
+          "why": "cross_border_signal"
+        },
+        {
+          "agent": "advisor",
+          "step": 3,
+          "why": "cross_border_signal"
+        }
+      ],
+      "national_overlap": 0.25,
+      "missing_sources": [
+        "WHO-IHR-2005"
+      ]
+    },
+    {
+      "probe_id": "G-MODEL-VALIDATION",
+      "category": "standards",
+      "category_label": "Standards gap",
+      "title": "No standard for validating and monitoring a model before and after deployment",
+      "status": "absent",
+      "national_best_score": 0.1375,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "Closest national text for: No standard for validating and monitoring a model before and after deployment",
+          "quote": "DAJC, DRFP, DEPMINSANTE 15 000 000 15 000 000 Budget de l'État/ Appui des PTF Organisation d'un atelier de validation du modèle de fonctionnement et de projets d'actes de création du Centre National de Télémédecine SG, CI.",
+          "chunk_id": "CM-PSNSN-2026-2030#c0058",
+          "citation": "CM-PSNSN-2026-2030 (Ministère de la Santé Publique, 2026), p. 30",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.1375,
+          "overlap": 0.22
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No standard for validating and monitoring a model before and after deployment",
+          "quote": "deployment. Local innovation involves large amounts of data and research efforts. The contextualization will facilitate the deployment of AI integration. Chapter 3 22 AI Ready – Analysis Towards a Standardized Readiness Framework Dimension Metrics Contextualization & Regional Impact • Number/quality of regionally developed patents/technology compo nents/solutions. o Datasets, models, research, guidelines, toolsets, a",
+          "chunk_id": "ITU-AIREADY-2025#c0042",
+          "citation": "ITU-AIREADY-2025 (ITU, 2025), p. 23–24",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "standard",
+          "score": 0.0569
+        }
+      ],
+      "recommendation": "Require external validation, a declared validity envelope, local calibration before new-region use, and post-deployment drift monitoring.",
+      "y3172": [
+        "M",
+        "MLFO",
+        "SANDBOX"
+      ],
+      "readiness": [
+        "D4 Contextualization and Regional Impact",
+        "D5 Level of Integration of AI in Workflows",
+        "D10 AI & Policies"
+      ],
+      "triggered_by": [
+        {
+          "agent": "surveillance",
+          "step": 1,
+          "why": "low_risk_output,nationwide_deployment_request"
+        }
+      ],
+      "national_overlap": 0.22,
+      "missing_sources": [
+        "WHO-AI-REG-2023"
+      ]
+    },
+    {
+      "probe_id": "G-TRANSPARENCY",
+      "category": "standards",
+      "category_label": "Standards gap",
+      "title": "No requirement to publish the validity limits of models used by public bodies",
+      "status": "absent",
+      "national_best_score": 0.0779,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "Closest national text for: No requirement to publish the validity limits of models used by public bodies",
+          "quote": "Circuit de l’information du niveau opérationnel au niveau central 106 v LISTE DES TABLEAUX Tableau 1 :",
+          "chunk_id": "CM-PSNLP-2024-2028#c0006",
+          "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 6–7",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0779,
+          "overlap": 0.2
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No requirement to publish the validity limits of models used by public bodies",
+          "quote": "Two broad approaches to ensuring intelligibility are improving the transparency and explainability of AI technology.",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0107",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 42",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.09
+        },
+        {
+          "text": "Practice example for: No requirement to publish the validity limits of models used by public bodies",
+          "quote": "GENERAL PURPOSE AI (GPAI) MODELS - All GPAI providers must provide technical documentation, comply with copyright law, publish training data summaries - Systemic risk GPAI (>10^25 FLOPs training compute): additional obligations including model evaluations, adversarial testing, incident reporting, cybersecurity measures 4.",
+          "chunk_id": "EU-AI-ACT-SUMMARY#c0000",
+          "citation": "EU-AI-ACT-SUMMARY (European Union, 2024)",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "comparator",
+          "score": 0.0565
+        }
+      ],
+      "recommendation": "Require a public transparency note for any model used in public-health decisions, including where it was shown not to work.",
+      "y3172": [
+        "D"
+      ],
+      "readiness": [
+        "D6 Human Interface",
+        "D10 AI & Policies"
+      ],
+      "triggered_by": [
+        {
+          "agent": "surveillance",
+          "step": 1,
+          "why": "low_risk_output,nationwide_deployment_request"
+        }
+      ],
+      "national_overlap": 0.2,
+      "missing_sources": []
+    },
+    {
+      "probe_id": "G-DATA-SHARING",
+      "category": "coordination",
+      "category_label": "Coordination problem",
+      "title": "No framework for routine data sharing between health, meteorology and telecom actors",
+      "status": "weak",
+      "national_best_score": 0.0798,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "National provision for: No framework for routine data sharing between health, meteorology and telecom actors",
+          "quote": "Suivant les dispositions du Décret N° 2013/093 du 04 avril 2013 portant organisation du Ministère de la santé Publique, la Cellule des Informations Sanitaires est chargée entre autres de la conception et du suivi de la mise en œuvre du Système d’Informations Sanitaires et de l’élaboration des indicateurs sanitaires nationaux.",
+          "chunk_id": "CM-PSNLP-2019-2023#c0062",
+          "citation": "CM-PSNLP-2019-2023 (Ministère de la Santé Publique / PNLP, 2019), p. 29",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0798,
+          "overlap": 0.45
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No framework for routine data sharing between health, meteorology and telecom actors",
+          "quote": "Accelerate the integration of AI in the core sectors outlined in the Digital Transformation Strategy, notably sectors with high social and economic value, including agriculture, education, health, climate change and natural resource management, and regional peace and security. iv.",
+          "chunk_id": "AU-AI-STRATEGY-2024#c0058",
+          "citation": "AU-AI-STRATEGY-2024 (African Union, 2024), p. 31–32",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "regional",
+          "score": 0.0674
+        },
+        {
+          "text": "Practice example for: No framework for routine data sharing between health, meteorology and telecom actors",
+          "quote": "In 2014, the US National Institutes of Health introduced their Genomic Data Sharing Policy, which is intended to encourage “broad and responsible sharing of genomic research data” (283).",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0296",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 104",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0522
+        }
+      ],
+      "recommendation": "Adopt data-sharing agreements between health, meteorology and network operators, with a common schema for climate-health data.",
+      "y3172": [
+        "SRC",
+        "C"
+      ],
+      "readiness": [
+        "D3 Cross-Domain Correlation Analysis",
+        "D7 Strategy Alignment"
+      ],
+      "triggered_by": [
+        {
+          "agent": "advisor",
+          "step": 1,
+          "why": "unanswered consultation from ministry"
+        },
+        {
+          "agent": "dpa",
+          "step": 2,
+          "why": "unanswered consultation from surveillance"
+        }
+      ],
+      "national_overlap": 0.45,
+      "missing_sources": [
+        "CM-PSNSN-2020-2024"
+      ]
+    },
+    {
+      "probe_id": "G-AI-HEALTH-REGULATION",
+      "category": "legislative",
+      "category_label": "Legislative gap",
+      "title": "No sector rule for AI tools used in public-health decision support",
+      "status": "weak",
+      "national_best_score": 0.0653,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "National provision for: No sector rule for AI tools used in public-health decision support",
+          "quote": "Une étude a été conduite sur la modélisation et l’expansion des ASCP au Cameroun et a permis élaboration d’un outil d’aide à la décision pour augmenter le nombre d’ASCp en vue du passage à l’échelle des Interventions Sous Directives Communautaires.",
+          "chunk_id": "CM-PSNLP-2024-2028#c0141",
+          "citation": "CM-PSNLP-2024-2028 (Ministère de la Santé Publique / PNLP, 2024), p. 55",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.0653,
+          "overlap": 0.38
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: No sector rule for AI tools used in public-health decision support",
+          "quote": "LAWS, POLICIES AND PRINCIPLES THAT APPLY TO ARTIFICIAL INTELLIGENCE FOR HEALTH 4.7 Regulatory considerations Regulation of AI technologies is likely to be developed and implemented by health regulatory authorities responsible for ensuring the safety, efficacy and appropriate use of technologies for health care and therapeutic development.",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0095",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 37–38",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.1122
+        },
+        {
+          "text": "Practice example for: No sector rule for AI tools used in public-health decision support",
+          "quote": "3 Excluding the United Nations Educational, Scientific and Cultural Organization (UNESCO) Recommendation on the Ethics of Artificial Intelligence (2021) and the two General Assembly resolutions on AI in 2024: “Seizing the opportunities of safe, secure and trustworthy artificial intelligence systems for sustainable development” (78/265) and “Enhancing international cooperation on capacity-building of artificial",
+          "chunk_id": "UN-GOVERNING-AI-2024#c0010",
+          "citation": "UN-GOVERNING-AI-2024 (UN High-level Advisory Body on AI, 2024), p. 8–9",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0683
+        },
+        {
+          "text": "Practice example for: No sector rule for AI tools used in public-health decision support",
+          "quote": "RISK-BASED CLASSIFICATION The Act classifies AI systems into four risk tiers: a) Unacceptable Risk (Prohibited):",
+          "chunk_id": "EU-AI-ACT-SUMMARY#c0000",
+          "citation": "EU-AI-ACT-SUMMARY (European Union, 2024)",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "comparator",
+          "score": 0.0513
+        }
+      ],
+      "recommendation": "Adopt a risk-tiered rule for AI decision-support in health, with pre-deployment evaluation proportionate to impact.",
+      "y3172": [
+        "M",
+        "SANDBOX"
+      ],
+      "readiness": [
+        "D10 AI & Policies"
+      ],
+      "triggered_by": [
+        {
+          "agent": "ministry",
+          "step": 1,
+          "why": "nationwide_deployment_request"
+        }
+      ],
+      "national_overlap": 0.38,
+      "missing_sources": [
+        "WHO-AI-REG-2023",
+        "AE-DOH-AI-POLICY-2018"
+      ]
+    },
+    {
+      "probe_id": "G-AUTOMATED-DECISION",
+      "category": "legislative",
+      "category_label": "Legislative gap",
+      "title": "Automated decisions and profiling in public-health targeting",
+      "status": "addressed",
+      "national_best_score": 0.1091,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "National provision for: Automated decisions and profiling in public-health targeting",
+          "quote": "ARTICLE 44.- (1) La personne concernéea le droit de s'opposer à toute décision basée exclusivement sur le traitement automatisé de ses données à caractère | personnel, y compris le profilage.",
+          "chunk_id": "CM-LAW-2024-017#c0032",
+          "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 44, p. 16–17",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.1091,
+          "overlap": 0.73
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: Automated decisions and profiling in public-health targeting",
+          "quote": "A person shall not be subject to a decision which produces legal effects concerning him/her or significantly affects him/her to a substantial degree, and which is based solely on automated processing of data intended to evaluate certain personal aspects relating to him/her.",
+          "chunk_id": "AU-MALABO-2014#c0046",
+          "citation": "AU-MALABO-2014 (African Union, 2014), p. 22",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "regional",
+          "score": 0.175
+        },
+        {
+          "text": "Practice example for: Automated decisions and profiling in public-health targeting",
+          "quote": "Data protection laws also increasingly recognize that people have the right not to be subject to decisions guided solely by automated processes.",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0085",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 34–35",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0982
+        },
+        {
+          "text": "Practice example for: Automated decisions and profiling in public-health targeting",
+          "quote": "34 Increasing reliance on automated decision-making and content-creation by opaque algorithms can undermine fair treatment and safety.",
+          "chunk_id": "UN-GOVERNING-AI-2024#c0081",
+          "citation": "UN-GOVERNING-AI-2024 (UN High-level Advisory Body on AI, 2024), p. 33",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0598
+        }
+      ],
+      "recommendation": "Clarify whether district-level targeting driven by a model is an automated decision, and what human review and explanation it requires.",
+      "y3172": [
+        "P",
+        "M"
+      ],
+      "readiness": [
+        "D8 Collaboration with AI",
+        "D10 AI & Policies"
+      ],
+      "triggered_by": [
+        {
+          "agent": "dpa",
+          "step": 1,
+          "why": "nationwide_deployment_request"
+        }
+      ],
+      "national_overlap": 0.73,
+      "missing_sources": []
+    },
+    {
+      "probe_id": "G-HEALTH-DATA-TRANSFER",
+      "category": "legislative",
+      "category_label": "Legislative gap",
+      "title": "Conditions for transferring health data abroad for model training are unclear",
+      "status": "addressed",
+      "national_best_score": 0.2098,
+      "national_documents_searched": [
+        "CM-COE-OCTOPUS-2021",
+        "CM-LAW-2010-012",
+        "CM-LAW-2024-017",
+        "CM-PNLP-2023-REVIEW",
+        "CM-PSNLP-2019-2023",
+        "CM-PSNLP-2024-2028",
+        "CM-PSNSN-2026-2030"
+      ],
+      "national_evidence": [
+        {
+          "text": "National provision for: Conditions for transferring health data abroad for model training are unclear",
+          "quote": "droifé que Jui@onfère la présente loi à l'égard des responsables du traitement. ARTICLE 32.- (1) Le transfert de don a personnel vers un Etat étranger, ou à une organisation inté OMalé, est subordonné à l'obtention d'une autorisation préalable délivrée Par l'Aÿtorité de protection des données à caractère personnel dans les gonditionS%ermettant de garantir l'exercice des droits de la personne concerné 7 (2)AFr | élivr",
+          "chunk_id": "CM-LAW-2024-017#c0025",
+          "citation": "CM-LAW-2024-017 (Présidence de la République du Cameroun, 2024), art. 32, p. 13",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "national",
+          "score": 0.2098,
+          "overlap": 0.67
+        }
+      ],
+      "practice_examples": [
+        {
+          "text": "Practice example for: Conditions for transferring health data abroad for model training are unclear",
+          "quote": "6. a) The data controller shall not transfer personal data to a non-Member State of the African Union unless such a State ensures an adequate EeSE TE EES EE REDS SEE ES OE AN ES LE STE TE BEE ETS E ES PISSEE ee | 22 level of protection of the privacy, freedoms and fundamental rights of persons whose data are being or are likely to be processed.",
+          "chunk_id": "AU-MALABO-2014#c0047",
+          "citation": "AU-MALABO-2014 (African Union, 2014), art. 10, 15, p. 22–23",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "regional",
+          "score": 0.0699
+        },
+        {
+          "text": "Practice example for: Conditions for transferring health data abroad for model training are unclear",
+          "quote": "Although confidentiality is a well-recognized pillar of medical practice, the duty of confidentiality may not be sufficient to cover the many types of data now used to guide AI health technologies and may also not be sufficient to control the production and transfer of health data (113).",
+          "chunk_id": "WHO-AI-ETHICS-2021#c0152",
+          "citation": "WHO-AI-ETHICS-2021 (World Health Organization, 2021), p. 56–57",
+          "verified": true,
+          "reason": "verbatim match",
+          "source_scope": "global",
+          "score": 0.0691
+        }
+      ],
+      "recommendation": "Publish implementing rules for cross-border transfers of health data used to train models, including pseudonymisation and processor obligations.",
+      "y3172": [
+        "C",
+        "SANDBOX"
+      ],
+      "readiness": [
+        "D1 Data/Model Marketplace",
+        "D10 AI & Policies"
+      ],
+      "triggered_by": [
+        {
+          "agent": "surveillance",
+          "step": 2,
+          "why": "foreign_cloud_training"
+        },
+        {
+          "agent": "dpa",
+          "step": 2,
+          "why": "foreign_cloud_training"
+        }
+      ],
+      "national_overlap": 0.67,
+      "missing_sources": [
+        "AE-PDPL-2021"
+      ]
+    }
+  ],
+  "evaluation": {
+    "expected_actions_found": [
+      "BLOCK_TRANSFER",
+      "DEPLOY_NATIONWIDE",
+      "FIELD_VERIFICATION",
+      "INFORM_NEIGHBOUR_COUNTRY",
+      "LOCAL_CALIBRATION_PERIOD",
+      "NOTIFY_WHO_IHR",
+      "PSEUDONYMISE_AGGREGATE",
+      "PUBLISH_TRANSPARENCY_NOTE",
+      "RANK_ONLY_OUTPUT",
+      "REQUIRE_DPIA"
+    ],
+    "expected_actions_missed": [],
+    "action_recall": 1.0,
+    "expected_gaps_found": [
+      "G-AI-HEALTH-REGULATION",
+      "G-AUTOMATED-DECISION",
+      "G-HEALTH-DATA-TRANSFER",
+      "G-IHR-PREDICTED",
+      "G-MODEL-VALIDATION",
+      "G-TRANSPARENCY"
+    ],
+    "expected_gaps_missed": [],
+    "gap_recall": 1.0,
+    "conflicts": 1,
+    "claims_admitted": 17,
+    "claims_rejected": 0,
+    "human_decisions": 4
+  }
+}
