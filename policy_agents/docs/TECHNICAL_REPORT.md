@@ -5,7 +5,7 @@
 - Team leader: OUANDJI NJANANG HERVÉ FABRICE
 - Team members: OUANDJI NJANANG HERVÉ FABRICE, CHAMDJOU NGALEU FRANKLIN DUVAN
 - Contact details: fabriceouandji@gmail.com · franklinduvan913@gmail.com
-- GitHub link: [repository URL]/policy_agents
+- GitHub link: https://github.com/fabrice002/PaluAlert-Policy-Agents
 
 ---
 
